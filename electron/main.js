@@ -3,6 +3,10 @@ const path = require('path');
 const fs = require('fs/promises');
 const Store = require('electron-store');
 const { parse } = require('csv-parse/sync');
+const { autoUpdater } = require('electron-updater');
+
+// Disable auto-downloading to ask user for permission first
+autoUpdater.autoDownload = false;
 
 const store = new Store();
 
@@ -46,6 +50,46 @@ app.whenReady().then(() => {
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow();
     });
+
+    if (app.isPackaged) {
+        autoUpdater.checkForUpdates();
+    }
+});
+
+// --- Auto Updater Events ---
+
+autoUpdater.on('update-available', (info) => {
+    dialog.showMessageBox({
+        type: 'info',
+        title: 'Update Available',
+        message: `Version ${info.version} is available. Would you like to download it now?`,
+        buttons: ['Download', 'Later'],
+        defaultId: 0,
+        cancelId: 1
+    }).then((result) => {
+        if (result.response === 0) {
+            autoUpdater.downloadUpdate();
+        }
+    });
+});
+
+autoUpdater.on('update-downloaded', (info) => {
+    dialog.showMessageBox({
+        type: 'info',
+        title: 'Update Ready',
+        message: 'The update has been downloaded. Restart now to install?',
+        buttons: ['Restart', 'Later'],
+        defaultId: 0,
+        cancelId: 1
+    }).then((result) => {
+        if (result.response === 0) {
+            autoUpdater.quitAndInstall();
+        }
+    });
+});
+
+autoUpdater.on('error', (err) => {
+    console.error('Auto Updater Error:', err);
 });
 
 app.on('window-all-closed', () => {
