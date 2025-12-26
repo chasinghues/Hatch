@@ -61,6 +61,23 @@ app.whenReady().then(() => {
 // --- Auto Updater Events ---
 
 autoUpdater.on('update-available', (info) => {
+    // macOS Workaround for unsigned builds
+    if (process.platform === 'darwin') {
+        dialog.showMessageBox({
+            type: 'info',
+            title: 'Update Available',
+            message: `Version ${info.version} is available.\n\nSince this app involves a manual update process on macOS, please download the new version manually to update.`,
+            buttons: ['Download from GitHub', 'Later'],
+            defaultId: 0,
+            cancelId: 1
+        }).then((result) => {
+            if (result.response === 0) {
+                shell.openExternal(`https://github.com/chasinghues/Hatch/releases/tag/v${info.version}`);
+            }
+        });
+        return;
+    }
+
     dialog.showMessageBox({
         type: 'info',
         title: 'Update Available',
