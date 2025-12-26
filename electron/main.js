@@ -72,7 +72,9 @@ autoUpdater.on('update-available', (info) => {
             cancelId: 1
         }).then((result) => {
             if (result.response === 0) {
-                shell.openExternal(`https://github.com/chasinghues/Hatch/releases/tag/v${info.version}`);
+                const arch = process.arch === 'arm64' ? 'arm64' : 'universal';
+                const filename = arch === 'arm64' ? `Hatch-${info.version}-arm64.dmg` : `Hatch-${info.version}.dmg`;
+                shell.openExternal(`https://github.com/chasinghues/Hatch/releases/download/v${info.version}/${filename}`);
             }
         });
         return;

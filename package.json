@@ -1,7 +1,7 @@
 {
     "name": "hatch-og-project-initializer",
     "productName": "Hatch",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "Standardized project folder structure creator",
     "main": "electron/main.js",
     "scripts": {

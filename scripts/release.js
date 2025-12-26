@@ -3,8 +3,8 @@ const path = require('path');
 
 const TOKEN = process.env.GITHUB_TOKEN;
 const REPO = 'chasinghues/Hatch';
-const TAG = 'v1.0.4'; // Incrementing to ensure clean slate for all assets
-const RELEASE_NAME = 'Hatch v1.0.4';
+const TAG = 'v1.0.5'; // Incrementing to ensure clean slate for all assets
+const RELEASE_NAME = 'Hatch v1.0.5';
 const BODY = 'Platform specific releases:\n\n- Windows (x64)\n- macOS (Apple Silicon & Intel)\n- Linux';
 
 async function getOrCreateRelease() {
