@@ -7,6 +7,8 @@ const { autoUpdater } = require('electron-updater');
 
 // Disable auto-downloading to ask user for permission first
 autoUpdater.autoDownload = false;
+autoUpdater.logger = require("electron-log");
+autoUpdater.logger.transports.file.level = "info";
 
 const store = new Store();
 
@@ -90,6 +92,15 @@ autoUpdater.on('update-downloaded', (info) => {
 
 autoUpdater.on('error', (err) => {
     console.error('Auto Updater Error:', err);
+    dialog.showErrorBox('Update Error', err == null ? "unknown" : (err.stack || err).toString());
+});
+
+autoUpdater.on('checking-for-update', () => {
+    console.log('Checking for update...');
+});
+
+autoUpdater.on('update-not-available', (info) => {
+    console.log('Update not available.', info);
 });
 
 app.on('window-all-closed', () => {
