@@ -1,7 +1,7 @@
 {
     "name": "hatch-og-project-initializer",
     "productName": "Hatch",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "description": "Standardized project folder structure creator",
     "main": "electron/main.js",
     "scripts": {
@@ -75,15 +75,34 @@
             "!**/*.spec.js",
             "!**/*.test.js"
         ],
+        "artifactName": "Hatch-${version}-${arch}.${ext}",
+        "nsis": {
+            "oneClick": false,
+            "allowToChangeInstallationDirectory": true,
+            "artifactName": "Hatch-Setup-${version}.${ext}"
+        },
         "mac": {
             "category": "public.app-category.productivity",
-            "icon": "public/icon.icns"
+            "icon": "public/icon.icns",
+            "target": [
+                "dmg"
+            ],
+            "artifactName": "Hatch-${version}-${arch}.${ext}"
         },
         "win": {
-            "icon": "public/icon.png"
+            "icon": "public/icon.png",
+            "target": [
+                "nsis"
+            ]
         },
         "linux": {
-            "icon": "public/icon.png"
+            "icon": "public/icon.png",
+            "target": [
+                "AppImage",
+                "deb"
+            ],
+            "category": "Utility",
+            "artifactName": "Hatch-${version}-${arch}.${ext}"
         },
         "electronLanguages": [
             "en-US"

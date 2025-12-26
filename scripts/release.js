@@ -3,9 +3,9 @@ const path = require('path');
 
 const TOKEN = process.env.GITHUB_TOKEN;
 const REPO = 'chasinghues/Hatch';
-const TAG = 'v1.0.5'; // Incrementing to ensure clean slate for all assets
-const RELEASE_NAME = 'Hatch v1.0.5';
-const BODY = 'Platform specific releases:\n\n- Windows (x64)\n- macOS (Apple Silicon & Intel)\n- Linux';
+const TAG = 'v1.0.6'; // Incrementing to ensure clean slate for all assets
+const RELEASE_NAME = 'Hatch v1.0.6';
+const BODY = 'Platform specific releases:\n\n- Windows (x64 Setup)\n- macOS (Apple Silicon & Universal DMG)\n- Linux (AppImage & Deb)';
 
 async function getOrCreateRelease() {
     console.log(`Checking for release ${TAG}...`);
@@ -112,7 +112,7 @@ async function main() {
         const files = fs.readdirSync(releaseDir);
         const assets = files.filter(f => {
             const ext = path.extname(f).toLowerCase();
-            return ['.exe', '.dmg', '.zip', '.appimage', '.snap'].includes(ext) && !f.endsWith('.blockmap');
+            return ['.exe', '.dmg', '.zip', '.appimage', '.deb'].includes(ext) && !f.endsWith('.blockmap');
         });
 
         console.log(`Found ${assets.length} artifacts to upload.`);
