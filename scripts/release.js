@@ -5,7 +5,18 @@ const TOKEN = process.env.GITHUB_TOKEN;
 const REPO = 'chasinghues/Hatch';
 const TAG = 'v1.0.9'; // Incrementing to ensure clean slate for all assets
 const RELEASE_NAME = 'Hatch v1.0.9';
-const BODY = 'Platform specific releases:\n\n- Windows (x64 Setup)\n- macOS (Apple Silicon & Universal DMG)\n- Linux (AppImage & Deb)';
+const BODY = `Platform specific releases:
+
+- Windows (x64 Setup)
+- macOS (Apple Silicon & Universal DMG)
+- Linux (AppImage & Deb)
+
+## 🍎 macOS User Instructions
+If you see a "Damage" error or "Can't be opened" message, please run this terminal command to allow the app:
+\`\`\`bash
+sudo xattr -cr /Applications/Hatch.app
+\`\`\`
+This is required because the app is currently self-signed.`;
 
 async function getOrCreateRelease() {
     console.log(`Checking for release ${TAG}...`);
