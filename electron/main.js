@@ -73,7 +73,7 @@ autoUpdater.on('update-available', (info) => {
         }).then((result) => {
             if (result.response === 0) {
                 const arch = process.arch === 'arm64' ? 'arm64' : 'universal';
-                const filename = arch === 'arm64' ? `Hatch-${info.version}-arm64.dmg` : `Hatch-${info.version}.dmg`;
+                const filename = arch === 'arm64' ? `Hatch-${info.version}-arm64.dmg` : `Hatch-${info.version}-universal.dmg`;
                 shell.openExternal(`https://github.com/chasinghues/Hatch/releases/download/v${info.version}/${filename}`);
             }
         });
