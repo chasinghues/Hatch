@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Background: Very Dark Grey (Almost Black) */
+    --background: 220 15% 10%;
+    --foreground: 210 20% 98%;
+
+    /* Card: Dark grey, slightly lighter */
+    --card: 220 15% 14%;
+    --card-foreground: 210 20% 98%;
+
+    /* Popovers */
+    --popover: 220 15% 12%;
+    --popover-foreground: 210 20% 98%;
+
+    /* Primary: Vibrant Orange/Red-Orange from reference */
+    --primary: 15 90% 55%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary: Dark Surface */
+    --secondary: 220 15% 20%;
+    --secondary-foreground: 210 20% 98%;
+
+    /* Muted */
+    --muted: 220 10% 20%;
+    --muted-foreground: 220 10% 60%;
+
+    /* Accent */
+    --accent: 220 15% 25%;
+    --accent-foreground: 210 20% 98%;
+
+    /* Destructive */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 20% 98%;
+
+    /* Borders: Subtle dark grey */
+    --border: 220 15% 22%;
+    --input: 220 15% 18%;
+    /* Ring matches Primary Orange */
+    --ring: 15 90% 55%;
+
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 220 15% 10%;
+    --foreground: 210 20% 98%;
+    --card: 220 15% 14%;
+    --card-foreground: 210 20% 98%;
+    --popover: 220 15% 12%;
+    --popover-foreground: 210 20% 98%;
+    --primary: 15 90% 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 15% 20%;
+    --secondary-foreground: 210 20% 98%;
+    --muted: 220 10% 20%;
+    --muted-foreground: 220 10% 60%;
+    --accent: 220 15% 25%;
+    --accent-foreground: 210 20% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 220 15% 22%;
+    --input: 220 15% 18%;
+    --ring: 15 90% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    /* Warm/Dark mesh gradient */
+    background-image:
+      radial-gradient(at 10% 10%, hsla(15, 80%, 15%, 0.4) 0, transparent 50%),
+      radial-gradient(at 90% 10%, hsla(340, 60%, 15%, 0.4) 0, transparent 50%),
+      /* Deep dark bottom */
+      linear-gradient(to bottom, transparent 0%, rgba(15, 15, 20, 0.8) 100%);
+
+    background-color: hsl(var(--background));
+    background-attachment: fixed;
+  }
+}
+
+/* Custom Electron Styles */
+.titlebar {
+  height: 48px;
+  width: 100%;
+  gap: 12px;
+  padding-left: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: hsl(var(--foreground));
+  -webkit-app-region: drag;
+  background: transparent;
+}
