@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hatch - The Modern Project Initializer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .glow {
+            box-shadow: 0 0 50px rgba(59, 130, 246, 0.15);
+        }
+    </style>
+</head>
+
+<body class="bg-[#0a0a0a] text-white min-h-screen selection:bg-blue-500/30">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 top-0 border-b border-white/5 bg-[#0a0a0a]/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div
+                    class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center font-bold">
+                    H</div>
+                <span class="font-bold text-xl tracking-tight">Hatch</span>
+            </div>
+            <a href="https://github.com/chasinghues/Hatch" target="_blank"
+                class="text-gray-400 hover:text-white transition-colors">
+                GitHub
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <main class="pt-32 pb-16 px-6">
+        <div class="max-w-4xl mx-auto text-center">
+            <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm mb-6">
+                <span>NEW</span>
+                <span class="w-1 h-1 rounded-full bg-blue-400"></span>
+                <span>v1.0.11 Released</span>
+            </div>
+
+            <h1
+                class="text-5xl md:text-7xl font-bold tracking-tight mb-8 bg-gradient-to-b from-white to-white/60 bg-clip-text text-transparent">
+                Scaffold projects <br> at lightspeed.
+            </h1>
+
+            <p class="text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+                Hatch is the premium standard for project initialization. Visual directory management, smart ingest, and
+                instant setup for modern development stacks.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="https://github.com/chasinghues/Hatch/releases/latest"
+                    class="h-12 px-8 rounded-full bg-white text-black font-semibold flex items-center gap-2 hover:bg-gray-200 transition-all hover:scale-105 active:scale-95">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg>
+                    Download for Mac
+                </a>
+                <a href="https://github.com/chasinghues/Hatch"
+                    class="h-12 px-8 rounded-full glass hover:bg-white/5 transition-all flex items-center gap-2">
+                    View Source
+                </a>
+            </div>
+
+            <!-- "Screenshot" Placeholder / Visual -->
+            <div class="mt-20 relative group">
+                <div
+                    class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000">
+                </div>
+                <div
+                    class="relative rounded-xl border border-white/10 bg-[#111] aspect-video flex items-center justify-center overflow-hidden shadow-2xl">
+                    <div
+                        class="absolute inset-x-0 top-0 h-10 border-b border-white/5 bg-[#151515] flex items-center px-4 gap-2">
+                        <div class="w-3 h-3 rounded-full bg-red-500/20"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500/20"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500/20"></div>
+                    </div>
+                    <!-- Abstract representation of the UI -->
+                    <div class="w-full h-full pt-10 flex">
+                        <div class="w-64 border-r border-white/5 p-4 space-y-3 hidden md:block">
+                            <div class="h-8 bg-white/5 rounded w-full"></div>
+                            <div class="h-4 bg-white/5 rounded w-3/4"></div>
+                            <div class="h-4 bg-white/5 rounded w-1/2"></div>
+                            <div class="h-4 bg-white/5 rounded w-5/6"></div>
+                        </div>
+                        <div class="flex-1 p-8 grid place-content-center">
+                            <div class="text-center space-y-4">
+                                <div
+                                    class="w-16 h-16 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl mx-auto flex items-center justify-center border border-white/10">
+                                    <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-lg font-medium text-white">Ready to Hatch?</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Features -->
+    <section class="py-24 px-6 border-t border-white/5">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Feature 1 -->
+                <div class="glass p-8 rounded-2xl">
+                    <div
+                        class="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center mb-6 text-blue-400">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Project Types</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        Pre-configured templates for Electron, Next.js, Python, and more. Define your own structure
+                        once, use it forever.
+                    </p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="glass p-8 rounded-2xl">
+                    <div
+                        class="w-12 h-12 bg-purple-500/10 rounded-lg flex items-center justify-center mb-6 text-purple-400">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Ingest Hub</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        Visualize and manage existing projects. See file structures at a glance and open them instantly
+                        in your favorite editor.
+                    </p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="glass p-8 rounded-2xl">
+                    <div
+                        class="w-12 h-12 bg-green-500/10 rounded-lg flex items-center justify-center mb-6 text-green-400">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Secure & Local</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        Built on Electron with local filesystem access. No cloud dependencies, no data leaving your
+                        machine.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 text-center text-gray-500 text-sm">
+        <p>© 2025 Chasing Hues. All rights reserved.</p>
+        <p class="mt-2">Hatch is open source software.</p>
+    </footer>
+
+</body>
+
+</html>
