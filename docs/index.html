@@ -40,58 +40,79 @@
         </div>
     </nav>
 
-    <!-- Hero -->
-    <main class="pt-32 pb-16 px-6">
-        <div class="max-w-4xl mx-auto text-center">
+    <!-- Background Gradients -->
+    <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
+        <div
+            class="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] bg-purple-600/20 rounded-full blur-[120px] animate-pulse">
+        </div>
+        <div class="absolute top-[10%] right-[10%] w-[40%] h-[40%] bg-orange-500/20 rounded-full blur-[100px]"></div>
+        <div class="absolute -bottom-[20%] left-[20%] w-[60%] h-[60%] bg-blue-600/10 rounded-full blur-[140px]"></div>
+    </div>
 
-            <!-- Hero Icon -->
-            <div class="mb-10 flex justify-center relative z-10">
+    <!-- Hero -->
+    <main class="pt-32 pb-16 px-6 relative">
+        <div class="max-w-5xl mx-auto text-center">
+
+            <!-- Hero Icon with Extra Glow -->
+            <div class="mb-12 flex justify-center relative z-10">
                 <div class="relative group">
                     <div
-                        class="absolute -inset-1 bg-gradient-to-br from-orange-500 to-red-600 rounded-[2rem] blur opacity-40 group-hover:opacity-70 transition duration-500">
+                        class="absolute -inset-4 bg-gradient-to-br from-orange-500 via-red-500 to-purple-600 rounded-full blur-2xl opacity-50 group-hover:opacity-80 transition duration-700 animate-tilt">
                     </div>
                     <img src="assets/icon.png" alt="Hatch App Icon"
-                        class="relative w-28 h-28 rounded-[1.75rem] shadow-2xl transition-transform duration-500 group-hover:scale-105 group-hover:-rotate-2 border border-white/10">
+                        class="relative w-32 h-32 rounded-[2rem] shadow-2xl transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-3 border border-white/10 ring-1 ring-white/20">
                 </div>
             </div>
 
             <div
-                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-sm mb-6">
-                <span>NEW</span>
-                <span class="w-1 h-1 rounded-full bg-orange-400"></span>
-                <span>v1.0.11 Released</span>
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-sm mb-8 hover:bg-white/10 transition-colors">
+                <span class="flex h-2 w-2 relative">
+                    <span
+                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
+                </span>
+                <span class="text-gray-300">v1.0.11 Released</span>
+                <span class="w-px h-3 bg-white/20 mx-1"></span>
+                <span
+                    class="bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent font-semibold">New
+                    Features Available</span>
             </div>
 
-            <h1
-                class="text-5xl md:text-7xl font-bold tracking-tight mb-8 bg-gradient-to-b from-white to-white/60 bg-clip-text text-transparent">
-                Scaffold projects <br> at lightspeed.
+            <h1 class="text-6xl md:text-8xl font-bold tracking-tight mb-8">
+                <span class="bg-gradient-to-b from-white to-white/70 bg-clip-text text-transparent">Scaffold
+                    projects</span>
+                <br>
+                <span
+                    class="bg-gradient-to-r from-orange-400 via-red-500 to-purple-600 bg-clip-text text-transparent">at
+                    lightspeed.</span>
             </h1>
 
-            <p class="text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-                Hatch is the premium standard for project initialization. Visual directory management, smart ingest, and
-                instant setup for modern development stacks.
+            <p class="text-xl md:text-2xl text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed font-light">
+                The premium standard for project initialization. <br>
+                <span class="text-gray-200 font-normal">Visual directory management, smart ingest, and instant
+                    setup.</span>
             </p>
 
-            <div class="flex flex-wrap items-center justify-center gap-4">
+            <div class="flex flex-wrap items-center justify-center gap-4 mb-20">
                 <a href="https://github.com/chasinghues/Hatch/releases/download/v1.0.11/Hatch-1.0.11-universal.dmg"
-                    class="h-12 px-8 rounded-full bg-white text-black font-semibold flex items-center gap-2 hover:bg-gray-200 transition-all hover:scale-105 active:scale-95">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    class="h-14 px-8 rounded-full bg-white text-black font-bold text-lg flex items-center gap-3 hover:bg-gray-100 transition-all hover:scale-105 active:scale-95 shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)]">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                         <path
                             d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.21-1.98 1.07-3.11-1.06.05-2.36.71-3.13 1.6-.66.75-1.24 1.97-1.08 3.15 1.19.09 2.42-.83 3.14-1.64z" />
                     </svg>
                     Download for Mac
                 </a>
                 <a href="https://github.com/chasinghues/Hatch/releases/download/v1.0.11/Hatch-Setup-1.0.11.exe"
-                    class="h-12 px-8 rounded-full glass hover:bg-white/10 text-white font-semibold flex items-center gap-2 transition-all">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    class="h-14 px-8 rounded-full glass hover:bg-white/10 text-white font-semibold flex items-center gap-3 transition-all hover:scale-105 border-white/10">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                         <path
                             d="M0 3.449L9.75 2.1v9.451H0v-8.102zm10.749-1.554L24 0v11.523h-13.251V1.895zm-10.749 10.929h9.75v7.456L0 18.75v-5.926zm10.749 0H24v10.105l-13.251-1.875v-8.23z" />
                     </svg>
                     Windows
                 </a>
                 <a href="https://github.com/chasinghues/Hatch/releases/download/v1.0.11/Hatch-1.0.11-x86_64.AppImage"
-                    class="h-12 px-8 rounded-full glass hover:bg-white/10 text-white font-semibold flex items-center gap-2 transition-all">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    class="h-14 px-8 rounded-full glass hover:bg-white/10 text-white font-semibold flex items-center gap-3 transition-all hover:scale-105 border-white/10">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                         <path
                             d="M12.002 0C5.372 0 0 5.373 0 12s5.372 12 12.002 12c6.628 0 11.998-5.373 11.998-12S18.63 0 12.002 0zm5.18 19.336c-.147.288-.343.344-.657.172-1.996-1.055-3.085-1.355-6.059-1.355-1.04 0-1.84.1-2.611.332-.58.172-.821.109-.96-.465-.412-1.688-.868-4.223-.868-5.344 0-1.926.852-2.18 2.062-2.18 1.144 0 4.542.129 6.002.129 2.222 0 3.336.566 3.09 2.871-.14 1.344-.199 4.316-.2 5.84zm-6.264-9.98c-2.484 0-2.822-1.129-2.822-2.149 0-2.195 1.574-3.535 4.383-3.535 2.593 0 4.164 1.355 4.164 3.516 0 1.25-.567 2.168-3.047 2.168h-2.678z" />
                     </svg>
@@ -100,28 +121,30 @@
             </div>
 
             <!-- App Screenshot -->
-            <div class="mt-24 relative group max-w-5xl mx-auto">
+            <div class="relative group max-w-6xl mx-auto perspective-1000">
                 <div
-                    class="absolute -inset-1 bg-gradient-to-r from-orange-600 to-red-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000">
+                    class="absolute -inset-1 bg-gradient-to-r from-orange-500 via-red-500 to-purple-600 rounded-2xl blur-lg opacity-30 group-hover:opacity-60 transition duration-1000">
                 </div>
 
                 <!-- Window Frame -->
-                <div class="relative rounded-xl border border-white/10 bg-[#111] overflow-hidden shadow-2xl">
+                <div
+                    class="relative rounded-xl border border-white/10 bg-[#0a0a0a] overflow-hidden shadow-2xl transform transition-transform duration-700 hover:scale-[1.01]">
                     <!-- Title Bar -->
-                    <div class="h-8 bg-[#1a1a1a] border-b border-white/5 flex items-center px-4 gap-2">
-                        <div class="w-3 h-3 rounded-full bg-[#FF5F57]"></div>
-                        <div class="w-3 h-3 rounded-full bg-[#FEBC2E]"></div>
-                        <div class="w-3 h-3 rounded-full bg-[#28C840]"></div>
+                    <div
+                        class="h-10 bg-[#161616]/90 backdrop-blur border-b border-white/5 flex items-center px-4 gap-2">
+                        <div class="w-3 h-3 rounded-full bg-[#FF5F57] shadow-inner"></div>
+                        <div class="w-3 h-3 rounded-full bg-[#FEBC2E] shadow-inner"></div>
+                        <div class="w-3 h-3 rounded-full bg-[#28C840] shadow-inner"></div>
+                        <div class="ml-4 text-xs font-medium text-gray-500 flex items-center gap-2">
+                            <span class="w-3 h-3 rounded bg-orange-500/20 flex items-center justify-center">
+                                <div class="w-1.5 h-1.5 rounded-full bg-orange-500"></div>
+                            </span>
+                            Hatch — Project Initializer
+                        </div>
                     </div>
                     <!-- Image -->
                     <img src="assets/screenshot.png" alt="Hatch App Interface" class="w-full h-auto">
                 </div>
-            </div>
-
-            <!-- "Image Inside App" / Branding -->
-            <div class="mt-12 flex justify-center">
-                <img src="assets/header-image.jpg" alt="Hatch Branding"
-                    class="h-32 rounded-lg opacity-80 hover:opacity-100 transition-opacity">
             </div>
         </div>
     </main>
