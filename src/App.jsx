@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { Layers, Folder, FileVideo, User, Calendar as CalendarIcon, Upload, ArrowRight, Check, AlertCircle, ChevronDown, ChevronRight, Settings as SettingsIcon, Plus, Trash2, Edit2, Download, Save, RefreshCw, X, HardDrive, History as HistoryIcon } from 'lucide-react';
+import { Layers, Folder, FolderOpen, FileVideo, User, Calendar as CalendarIcon, Upload, ArrowRight, Check, AlertCircle, ChevronDown, ChevronRight, Settings as SettingsIcon, Plus, Trash2, Edit2, Download, Save, RefreshCw, X, HardDrive, History as HistoryIcon, ChevronsUpDown } from 'lucide-react';
 
 import { format, isValid } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -18,48 +18,19 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Toaster } from "@/components/ui/toaster"
 import { useToast } from "@/components/ui/use-toast"
+
 import { cn } from "@/lib/utils"
 
+import ProjectsHub from "@/components/ProjectsHub"
+import defaultTemplates from "@/data/templates.json";
+import defaultProjectTypes from "@/data/projectTypes.json"
+import { NodeList } from "@/components/DirectoryStructure"
+
 // --- Constants ---
+// Gist URL for Project Types. Update this to your raw gist URL.
+const PROJECT_TYPES_GIST_URL = "https://gist.githubusercontent.com/chasinghues/02988fe587552bd2ade5fc1fbdbb4cc0/raw/1a2a006a30aa63b1971ecd0adf607cec6ad21eb6/Project%2520Types";
 
-const PROJECT_TYPES = [
-    { label: 'OG Content', value: 'OG_CONTENT' },
-    { label: 'Reel', value: 'REEL' },
-    { label: 'Ad Film', value: 'AD_FILM' },
-    { label: 'Motion Graphics', value: 'MOTION_GRAPHICS' },
-    { label: 'LED Video', value: 'LED_VIDEO' },
-    { label: 'Corporate Video', value: 'CORPORATE_VIDEO' },
-    { label: 'Internal', value: 'INTERNAL' },
-];
-
-const INITIAL_STRUCTURE = [
-    { id: '01_FOOTAGE', name: '01_FOOTAGE', checked: true, children: [] },
-    { id: '02_PROXIES', name: '02_PROXIES', checked: true, children: [] },
-    {
-        id: '03_AUDIO', name: '03_AUDIO', checked: true, children: [
-            { id: '03_AUDIO/SFX', name: 'SFX', checked: true, children: [] },
-            { id: '03_AUDIO/MUSIC', name: 'MUSIC', checked: true, children: [] },
-            { id: '03_AUDIO/VO', name: 'VO', checked: true, children: [] }
-        ]
-    },
-    {
-        id: '04_VFX', name: '04_VFX', checked: true, children: [
-            { id: '04_VFX/COMPS', name: 'COMPS', checked: true, children: [] },
-            { id: '04_VFX/IN', name: 'IN', checked: true, children: [] },
-            { id: '04_VFX/OUT', name: 'OUT', checked: true, children: [] }
-        ]
-    },
-    { id: '05_COLOR', name: '05_COLOR', checked: true, children: [] },
-    {
-        id: '06_ASSETS', name: '06_ASSETS', checked: true, children: [
-            { id: '06_ASSETS/STILLS', name: 'STILLS', checked: true, children: [] },
-            { id: '06_ASSETS/GRAPHICS', name: 'GRAPHICS', checked: true, children: [] },
-            { id: '06_ASSETS/LOGOS', name: 'LOGOS', checked: true, children: [] }
-        ]
-    },
-    { id: '08_EXPORTS', name: '08_EXPORTS', checked: true, children: [] },
-    { id: '09_DOCUMENTS', name: '09_DOCUMENTS', checked: true, children: [] },
-];
+const INITIAL_STRUCTURE = defaultTemplates.defaults[0].structure;
 
 function sanitize(str) {
     return str.trim().replace(/[^a-zA-Z0-9\-\s]/g, '');
@@ -105,7 +76,7 @@ function reindexRootFolders(structure) {
 const Sidebar = ({ activeTab, setActiveTab }) => {
     const items = [
         { id: 'project', icon: Layers, label: 'Structure' },
-        { id: 'ingest', icon: HardDrive, label: 'Ingest' },
+        { id: 'projects', icon: FolderOpen, label: 'Projects' },
     ];
 
     return (
@@ -116,7 +87,9 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
                     onClick={() => setActiveTab(item.id)}
                     className={cn(
                         "w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 group relative",
-                        activeTab === item.id ? "bg-primary text-primary-foreground shadow-[0_0_15px_rgba(var(--primary),0.5)]" : "text-muted-foreground hover:bg-white/5 hover:text-white"
+                        activeTab === item.id
+                            ? "bg-primary text-primary-foreground shadow-[0_0_15px_rgba(var(--primary),0.5)]"
+                            : "text-muted-foreground hover:bg-white/5 hover:text-white"
                     )}
                     title={item.label}
                 >
@@ -178,7 +151,8 @@ function MainApp() {
     const [activeTab, setActiveTab] = useState('project'); // Navigation State
 
     // Data State
-    const [projectType, setProjectType] = useState('OG_CONTENT');
+    // Data State
+    const [projectType, setProjectType] = useState('Commercial');
     // ... (rest of existing state)
     const [clientName, setClientName] = useState('');
     const [projectName, setProjectName] = useState('');
@@ -196,8 +170,47 @@ function MainApp() {
     const [namingStructure, setNamingStructure] = useState(['CLIENT', 'PROJECT', 'TYPE', 'DATE']);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
+    // Project Types State
+    const [projectTypesList, setProjectTypesList] = useState(defaultProjectTypes);
+    const [isProjectTypeOpen, setIsProjectTypeOpen] = useState(false);
+
+    // Fetch Project Types from Gist or Store
+    useEffect(() => {
+        if (PROJECT_TYPES_GIST_URL) {
+            fetch(PROJECT_TYPES_GIST_URL)
+                .then(res => res.json())
+                .then(data => {
+                    if (Array.isArray(data)) {
+                        setProjectTypesList(data.sort());
+                        if (window.electronAPI) window.electronAPI.storeSet('projectTypes', data);
+                    }
+                })
+                .catch(err => console.error("Failed to fetch Project Types Gist:", err));
+        } else {
+            if (window.electronAPI) {
+                window.electronAPI.storeGet('projectTypes').then(res => {
+                    // If we have stored types, use them, otherwise defaultProjectTypes is already valid.
+                    // Merging or replacing? Replacing allows updates via caching logic if we implemented a Gist check.
+                    // For now, if stored exists, use it? Or favor local file default?
+                    // The requirement is "access from gist... fetch first time".
+                    // If no Gist URL, we rely on local file.
+                    // If store has data (maybe from previous Gist fetch), use it.
+                    if (res && Array.isArray(res)) setProjectTypesList(res.sort());
+                });
+            }
+        }
+    }, []);
+
     // Ingest specific State
     const [ingestDestination, setIngestDestination] = useState('');
+    const [isInitialized, setIsInitialized] = useState(false);
+
+    // Re-initialization Logic
+    useEffect(() => {
+        if (isInitialized) {
+            setIsInitialized(false);
+        }
+    }, [projectName, clientName, projectType, date]);
 
     // Load Persistence (Same as before)
     useEffect(() => {
@@ -224,104 +237,7 @@ function MainApp() {
                 // Actually, I will target the `return` block mainly to inject the Sidebar.
 
                 // Re-implementing just the necessary parts to ensure context is valid.
-                const defaults_ = [
-                    { name: "Professional (Default)", structure: INITIAL_STRUCTURE },
-                    {
-                        name: "Social Media (Short Form)",
-                        structure: [
-                            { id: '01_RAW', name: '01_RAW', checked: true, children: [] },
-                            {
-                                id: '02_ASSETS', name: '02_ASSETS', checked: true, children: [
-                                    { id: '02_ASSETS/AUDIO', name: 'AUDIO', checked: true, children: [] },
-                                    { id: '02_ASSETS/GRAPHICS', name: 'GRAPHICS', checked: true, children: [] },
-                                    { id: '02_ASSETS/FONTS', name: 'FONTS', checked: true, children: [] }
-                                ]
-                            },
-                            { id: '03_PROJECTS', name: '03_PROJECTS', checked: true, children: [] },
-                            {
-                                id: '04_EXPORTS', name: '04_EXPORTS', checked: true, children: [
-                                    { id: '04_EXPORTS/DRAFTS', name: 'DRAFTS', checked: true, children: [] },
-                                    { id: '04_EXPORTS/FINAL', name: 'FINAL', checked: true, children: [] }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        name: "Documentary / Feature",
-                        structure: [
-                            {
-                                id: '00_ADMIN', name: '00_ADMIN', checked: true, children: [
-                                    { id: '00_ADMIN/AGREEMENTS', name: 'AGREEMENTS', checked: true, children: [] },
-                                    { id: '00_ADMIN/SCRIPTS', name: 'SCRIPTS', checked: true, children: [] },
-                                    { id: '00_ADMIN/LOGS', name: 'LOGS', checked: true, children: [] }
-                                ]
-                            },
-                            {
-                                id: '01_FOOTAGE', name: '01_FOOTAGE', checked: true, children: [
-                                    { id: '01_FOOTAGE/INTERVIEWS', name: 'INTERVIEWS', checked: true, children: [] },
-                                    { id: '01_FOOTAGE/BROLL', name: 'BROLL', checked: true, children: [] },
-                                    { id: '01_FOOTAGE/ARCHIVAL', name: 'ARCHIVAL', checked: true, children: [] },
-                                    { id: '01_FOOTAGE/DRONE', name: 'DRONE', checked: true, children: [] }
-                                ]
-                            },
-                            {
-                                id: '02_AUDIO', name: '02_AUDIO', checked: true, children: [
-                                    { id: '02_AUDIO/INTERVIEWS', name: 'INTERVIEWS', checked: true, children: [] },
-                                    { id: '02_AUDIO/MUSIC', name: 'MUSIC', checked: true, children: [] },
-                                    { id: '02_AUDIO/SFX', name: 'SFX', checked: true, children: [] }
-                                ]
-                            },
-                            { id: '03_PROJECTS', name: '03_PROJECTS', checked: true, children: [] },
-                            { id: '04_GRAPHICS', name: '04_GRAPHICS', checked: true, children: [] },
-                            { id: '05_EXPORTS', name: '05_EXPORTS', checked: true, children: [] }
-                        ]
-                    },
-                    {
-                        name: "VFX Pipeline",
-                        structure: [
-                            {
-                                id: '01_IN', name: '01_IN', checked: true, children: [
-                                    { id: '01_IN/PLATES', name: 'PLATES', checked: true, children: [] },
-                                    { id: '01_IN/REF', name: 'REF', checked: true, children: [] },
-                                    { id: '01_IN/LUTS', name: 'LUTS', checked: true, children: [] }
-                                ]
-                            },
-                            {
-                                id: '02_WORK', name: '02_WORK', checked: true, children: [
-                                    { id: '02_WORK/3D', name: '3D', checked: true, children: [] },
-                                    { id: '02_WORK/COMP', name: 'COMP', checked: true, children: [] },
-                                    { id: '02_WORK/TRACKING', name: 'TRACKING', checked: true, children: [] }
-                                ]
-                            },
-                            {
-                                id: '03_RENDER', name: '03_RENDER', checked: true, children: [
-                                    { id: '03_RENDER/WIP', name: 'WIP', checked: true, children: [] },
-                                    { id: '03_RENDER/PRECOMP', name: 'PRECOMP', checked: true, children: [] }
-                                ]
-                            },
-                            { id: '04_OUT', name: '04_OUT', checked: true, children: [] }
-                        ]
-                    },
-                    {
-                        name: "Color Grading Suite",
-                        structure: [
-                            {
-                                id: '01_CONFORM', name: '01_CONFORM', checked: true, children: [
-                                    { id: '01_CONFORM/XML_EDL', name: 'XML_EDL', checked: true, children: [] },
-                                    { id: '01_CONFORM/REFERENCE', name: 'REFERENCE', checked: true, children: [] }
-                                ]
-                            },
-                            { id: '02_SOURCE', name: '02_SOURCE', checked: true, children: [] },
-                            {
-                                id: '03_RENDER', name: '03_RENDER', checked: true, children: [
-                                    { id: '03_RENDER/MASTER', name: 'MASTER', checked: true, children: [] },
-                                    { id: '03_RENDER/DSM', name: 'DSM', checked: true, children: [] },
-                                    { id: '03_RENDER/WEB', name: 'WEB', checked: true, children: [] }
-                                ]
-                            }
-                        ]
-                    }
-                ];
+                const defaults_ = defaultTemplates.defaults;
 
                 const saved = (res && Array.isArray(res)) ? res : [];
                 const merged = [...saved];
@@ -429,12 +345,19 @@ function MainApp() {
             const result = await window.electronAPI.createStructure({
                 destination,
                 rootName: generatedName,
-                structure: foldersToCreate
+                structure: foldersToCreate,
+                metadata: {
+                    projectName,
+                    clientName,
+                    projectType,
+                    date: date ? date.toISOString() : new Date().toISOString()
+                }
             });
 
             if (result.success) {
                 setStatus({ type: 'success', message: `Created: ${result.path}` });
-                toast({ title: "Project Created", description: `Folder created at ${result.path}` });
+                toast({ title: "Project Initialized", description: `Folder created at ${result.path}` });
+                setIsInitialized(true);
             } else {
                 setStatus({ type: 'error', message: result.error });
                 toast({ variant: "destructive", title: "Error", description: result.error });
@@ -507,8 +430,64 @@ function MainApp() {
         const fullPath = `${destination}/${generatedName}/${node.id}`;
 
         setIngestDestination(fullPath);
-        setActiveTab('ingest');
+        setIngestDestination(fullPath);
+        setActiveTab('projects');
         toast({ title: "Ingest Target Set", description: `Selected: ${node.name}` });
+    };
+
+    const handleExportTemplate = async () => {
+        if (window.electronAPI) {
+            // Save current structure
+            const currentStructure = {
+                name: "Custom Export",
+                structure: structure
+            };
+            const res = await window.electronAPI.saveJSON({
+                title: "Export Template",
+                defaultPath: "template.json",
+                data: currentStructure
+            });
+            if (res && res.success) {
+                toast({ title: "Template Exported", description: `Saved to ${res.filePath}` });
+            } else if (res && res.error) {
+                toast({ variant: "destructive", title: "Export Failed", description: res.error });
+            }
+        }
+    };
+
+    const handleImportTemplate = async () => {
+        if (window.electronAPI) {
+            const res = await window.electronAPI.readJSON();
+            if (res && res.success) {
+                const data = res.data;
+                // Validation: check for structure array or if it's the structure itself
+                let newT = null;
+                if (Array.isArray(data)) {
+                    // Assume it's a raw structure array
+                    newT = { name: `Imported ${format(new Date(), 'HH:mm:ss')}`, structure: data };
+                } else if (data.structure && Array.isArray(data.structure)) {
+                    // Assume it's our template object
+                    newT = { name: data.name || `Imported ${format(new Date(), 'HH:mm:ss')}`, structure: data.structure };
+                }
+
+                if (newT) {
+                    // Verify if name exists
+                    let finalName = newT.name;
+                    if (templates.some(t => t.name === finalName)) {
+                        finalName = `${finalName} (Copy)`;
+                    }
+                    newT.name = finalName;
+
+                    const newTemplates = [...templates, newT];
+                    saveTemplates(newTemplates);
+                    toast({ title: "Template Imported", description: `Added "${finalName}" to your templates.` });
+                } else {
+                    toast({ variant: "destructive", title: "Invalid File", description: "The JSON does not look like a valid Hatch template." });
+                }
+            } else if (res && res.error) {
+                toast({ variant: "destructive", title: "Import Failed", description: res.error });
+            }
+        }
     };
 
     return (
@@ -521,7 +500,7 @@ function MainApp() {
             </div>
             <Toaster />
 
-            <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+            <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} isInitialized={isInitialized} />
 
             {activeTab === 'project' && (
                 <>
@@ -533,6 +512,8 @@ function MainApp() {
                             <SettingsPanel
                                 clients={clients} saveClients={saveClients}
                                 namingStructure={namingStructure} saveNamingStructure={saveNamingStructure}
+                                onImportTemplate={handleImportTemplate}
+                                onExportTemplate={handleExportTemplate}
                             />
                         </DialogContent>
                     </Dialog>
@@ -561,14 +542,47 @@ function MainApp() {
                                 <div className="space-y-6">
                                     <div className="space-y-2">
                                         <Label>Project Type</Label>
-                                        <Select value={projectType} onValueChange={setProjectType}>
-                                            <SelectTrigger><SelectValue /></SelectTrigger>
-                                            <SelectContent>
-                                                <SelectGroup>
-                                                    {PROJECT_TYPES.map(t => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
-                                                </SelectGroup>
-                                            </SelectContent>
-                                        </Select>
+                                        <Popover open={isProjectTypeOpen} onOpenChange={setIsProjectTypeOpen}>
+                                            <PopoverTrigger asChild>
+                                                <Button
+                                                    variant="outline"
+                                                    role="combobox"
+                                                    aria-expanded={isProjectTypeOpen}
+                                                    className="w-full justify-between"
+                                                >
+                                                    {projectType || "Select type..."}
+                                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-[380px] p-0">
+                                                <Command>
+                                                    <CommandInput placeholder="Search type..." />
+                                                    <CommandList>
+                                                        <CommandEmpty>No type found.</CommandEmpty>
+                                                        <CommandGroup className="max-h-[200px] overflow-y-auto">
+                                                            {projectTypesList.map((type) => (
+                                                                <CommandItem
+                                                                    key={type}
+                                                                    value={type}
+                                                                    onSelect={() => {
+                                                                        setProjectType(type);
+                                                                        setIsProjectTypeOpen(false);
+                                                                    }}
+                                                                >
+                                                                    <Check
+                                                                        className={cn(
+                                                                            "mr-2 h-4 w-4",
+                                                                            projectType === type ? "opacity-100" : "opacity-0"
+                                                                        )}
+                                                                    />
+                                                                    {type}
+                                                                </CommandItem>
+                                                            ))}
+                                                        </CommandGroup>
+                                                    </CommandList>
+                                                </Command>
+                                            </PopoverContent>
+                                        </Popover>
                                     </div>
 
                                     <div className="space-y-2">
@@ -643,9 +657,10 @@ function MainApp() {
                                 </div>
                             </div>
 
-                            <Button onClick={handleCreate} disabled={isCreating} className="w-full h-12 text-md font-semibold shadow-[0_0_20px_rgba(var(--primary),0.2)] hover:shadow-[0_0_30px_rgba(var(--primary),0.4)] transition-all duration-300">
-                                {isCreating ? 'Accessing File System...' : 'Initialize Project'}
-                                {!isCreating && <ArrowRight className="ml-2 h-4 w-4" />}
+                            <Button onClick={handleCreate} disabled={isCreating || isInitialized} className="w-full h-12 text-md font-semibold shadow-[0_0_20px_rgba(var(--primary),0.2)] hover:shadow-[0_0_30px_rgba(var(--primary),0.4)] transition-all duration-300">
+                                {isCreating ? 'Accessing File System...' : isInitialized ? 'Initialized' : 'Initialize Project'}
+                                {!isCreating && !isInitialized && <ArrowRight className="ml-2 h-4 w-4" />}
+                                {isInitialized && <Check className="ml-2 h-4 w-4" />}
                             </Button>
                         </div>
                     </div>
@@ -681,12 +696,36 @@ function MainApp() {
                         loadTemplate={loadTemplate}
                         saveTemplate={saveTemplate}
                         deleteTemplate={deleteTemplate}
-                        onIngest={handleIngestRequest}
+                        onIngest={isInitialized ? handleIngestRequest : null}
                     />
                 </>
             )}
 
-            {activeTab === 'ingest' && <IngestView initialDestination={ingestDestination} />}
+            {activeTab === 'projects' && (
+                <ProjectsHub
+                    initialDestination={ingestDestination}
+                    initialProjectContext={{
+                        name: projectName,
+                        client: clientName,
+                        type: projectType,
+                        date: date ? date.toISOString() : new Date().toISOString(),
+                        path: `${destination}/${generatedName}`
+                    }}
+                    onBack={() => setActiveTab('project')}
+                />
+            )}
+
+            {/* Developer Footer */}
+            <div className="fixed bottom-3 right-4 z-50 pointer-events-none select-none">
+                <div className="text-[10px] text-white/20 font-mono tracking-widest backdrop-blur-sm px-2 py-1 rounded-full border border-transparent hover:border-white/5 hover:bg-black/40 hover:text-white/60 transition-all duration-500 pointer-events-auto cursor-default">
+                    Made by <span
+                        className="hover:text-primary cursor-pointer hover:underline"
+                        onClick={() => window.electronAPI ? window.electronAPI.openExternal("https://github.com/chasinghues/Hatch") : window.open("https://github.com/chasinghues/Hatch", "_blank")}
+                    >
+                        Arjun Sreekumar
+                    </span>
+                </div>
+            </div>
         </div>
     )
 }
@@ -946,6 +985,7 @@ function StructureEditor({ structure, setStructure, handleToggle, templates, loa
                     <div className="flex items-center gap-4">
                         {/* Templates UI Moved Here */}
                         <div className="flex items-center gap-2">
+
                             <Popover>
                                 <PopoverTrigger asChild>
                                     <Button variant="outline" size="sm" className="h-9 px-3 text-xs bg-black/40 border-white/10 hover:bg-white/10 hover:text-white transition-all">
@@ -1001,218 +1041,10 @@ function StructureEditor({ structure, setStructure, handleToggle, templates, loa
 
 // ... (StructureEditor signature update in next step)
 
-function NodeList({ nodes, parentId, onInsert, onDelete, onToggle, onConfirmEdit, onStartEdit, onIngest, level = 0 }) {
-    if (!nodes) return null;
 
-    return (
-        <div className="flex flex-col">
-            {nodes.map((node, index) => (
-                <React.Fragment key={node.id || index}>
-                    <InsertZone level={level} onInsert={() => onInsert(parentId, index)} />
-                    <FolderNode
-                        node={node}
-                        parentId={parentId}
-                        level={level}
-                        onDelete={onDelete}
-                        onToggle={onToggle}
-                        onInsert={onInsert}
-                        onConfirmEdit={onConfirmEdit}
-                        onStartEdit={onStartEdit}
-                        onIngest={onIngest}
-                    />
-                </React.Fragment>
-            ))}
-            {/* Final insertion point */}
-            <InsertZone level={level} onInsert={() => onInsert(parentId, nodes.length)} isLast />
-        </div>
-    );
-}
 
-function InsertZone({ onInsert, level, isLast }) {
-    const isSub = level > 0;
-    return (
-        <div
-            className={cn(
-                "h-4 -my-2 relative group z-30 flex items-center justify-center cursor-pointer transition-all",
-                isLast ? "h-6 my-0" : ""
-            )}
-            style={{ marginLeft: `${level * 20}px` }}
-            onClick={(e) => {
-                e.stopPropagation();
-                onInsert();
-            }}
-        >
-            <div className={cn(
-                "h-[2px] transition-colors rounded-full",
-                isSub ? "w-[85%] bg-[#bac1ff]/0 group-hover:bg-[#bac1ff]" : "w-full bg-blue-500/0 group-hover:bg-blue-500"
-            )} />
-
-            <div className={cn(
-                "absolute left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 rounded-full w-4 h-4 flex items-center justify-center text-[10px] shadow-sm transform scale-50 group-hover:scale-100 transition-all",
-                isSub ? "bg-[#bac1ff] text-white" : "bg-blue-500 text-white"
-            )}>
-                <Plus className="w-3 h-3" />
-            </div>
-        </div>
-    );
-}
-
-function FolderNode({ node, parentId, onDelete, onToggle, onInsert, onConfirmEdit, onStartEdit, onIngest, level }) {
-    const [isOpen, setIsOpen] = useState(true);
-    const [isHovered, setIsHovered] = useState(false);
-    const hasChildren = node.children && node.children.length > 0;
-
-    const isSub = level > 0;
-
-    const [editName, setEditName] = useState(node.name === "UNTITLED" ? "" : node.name);
-    const inputRef = useRef(null);
-
-    useEffect(() => {
-        if (node.isEditing && inputRef.current) {
-            inputRef.current.focus();
-        }
-    }, [node.isEditing]);
-
-    const handleKeyDown = (e) => {
-        if (e.key === 'Enter') {
-            onConfirmEdit(node.id, editName);
-        } else if (e.key === 'Escape') {
-            onConfirmEdit(node.id, ""); // Cancel -> Delete
-        }
-        e.stopPropagation();
-    };
-
-    const handleBlur = () => {
-        onConfirmEdit(node.id, editName);
-    };
-
-    // Editing View
-    if (node.isEditing) {
-        return (
-            <div className="flex items-center gap-2 py-1.5 px-2 rounded-md bg-muted/50 my-1 animate-in fade-in zoom-in-95 duration-200" style={{ marginLeft: `${level * 20}px` }}>
-                <Folder className="h-4 w-4 text-muted-foreground" />
-                <Input
-                    ref={inputRef}
-                    value={editName}
-                    onChange={e => setEditName(e.target.value.toUpperCase())}
-                    onKeyDown={handleKeyDown}
-                    onBlur={handleBlur}
-                    className="h-7 text-xs font-mono uppercase"
-                    placeholder="FOLDER_NAME"
-                />
-            </div>
-        );
-    }
-
-    // Normal View
-    return (
-        <div className="select-none text-sm relative" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
-            <div
-                className={cn(
-                    "flex items-center gap-3 py-1 px-3 rounded-lg transition-all group z-20 relative",
-                    node.checked
-                        ? ""
-                        : "opacity-60"
-                )}
-                style={{ paddingLeft: `${level * 24 + 12}px` }}
-            >
-                <button
-                    onClick={(e) => { e.stopPropagation(); setIsOpen(!isOpen); }}
-                    className={cn("h-6 w-6 flex items-center justify-center rounded-md hover:bg-white/10 transition-colors", !hasChildren && "invisible")}
-                >
-                    {isOpen ? <ChevronDown className="h-4 w-4 text-muted-foreground" /> : <ChevronRight className="h-4 w-4 text-muted-foreground" />}
-                </button>
-
-                <div className="scale-110">
-                    <Checkbox checked={node.checked} onCheckedChange={(c) => onToggle(node.id, c)} className="border-white/20 data-[state=checked]:bg-primary data-[state=checked]:border-primary" />
-                </div>
-
-                <div className="flex items-center gap-3 flex-1 cursor-pointer min-w-0" onClick={(e) => { e.stopPropagation(); onStartEdit(node.id); }}>
-                    <Folder className={cn(
-                        "h-5 w-5 shrink-0 transition-colors",
-                        node.checked
-                            ? "fill-primary text-primary drop-shadow-[0_0_8px_rgba(var(--primary),0.4)]"
-                            : "fill-muted text-muted-foreground"
-                    )} />
-                    <span className={cn(
-                        "font-mono truncate tracking-tight transition-colors hover:underline hover:text-primary",
-                        node.checked
-                            ? "text-foreground font-semibold"
-                            : "text-muted-foreground decoration-line-through"
-                    )}>
-                        {node.name}
-                    </span>
-                </div>
-
-                {isHovered && (
-                    <div className="flex items-center gap-1 ml-auto animate-in fade-in duration-200">
-                        {/* Ingest Button */}
-                        <Button
-                            variant="ghost" size="icon" className="h-7 w-7 hover:bg-blue-500/20 hover:text-blue-500 rounded-full"
-                            title="Ingest footage here"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                if (onIngest) onIngest(node);
-                            }}
-                        >
-                            <HardDrive className="h-3.5 w-3.5" />
-                        </Button>
-
-                        {/* Add Child Button */}
-                        <Button
-                            variant="ghost" size="icon" className="h-7 w-7 hover:bg-white/10 hover:text-primary rounded-full"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                onInsert(node.id, 0); // Insert at 0 index of this parent
-                                setIsOpen(true); // Ensure open to see new item
-                            }}
-                        >
-                            <Plus className="h-3.5 w-3.5" />
-                        </Button>
-
-                        {/* Delete Button */}
-                        <Button
-                            variant="ghost" size="icon" className="h-7 w-7 hover:bg-red-500/20 hover:text-red-500 rounded-full"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                if (confirm("Delete this folder and all contents?")) onDelete(node.id);
-                            }}
-                        >
-                            <Trash2 className="h-3.5 w-3.5" />
-                        </Button>
-                    </div>
-                )}
-            </div>
-
-            <AnimatePresence>
-                {hasChildren && isOpen && (
-                    <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        className="overflow-hidden"
-                    >
-                        <div className="pl-4 ml-3 border-l border-white/10">
-                            <NodeList
-                                nodes={node.children}
-                                parentId={node.id}
-                                onInsert={onInsert}
-                                onDelete={onDelete}
-                                onToggle={onToggle}
-                                onConfirmEdit={onConfirmEdit}
-                                onStartEdit={onStartEdit}
-                                onIngest={onIngest}
-                                level={level + 1}
-                            />
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-        </div>
-    );
-}
-
-function SettingsPanel({ clients, saveClients, namingStructure, saveNamingStructure }) {
+function SettingsPanel({ clients, saveClients, namingStructure, saveNamingStructure, onImportTemplate, onExportTemplate }) {
+    const [activeSettingsTab, setActiveSettingsTab] = useState('templates');
     const [newClient, setNewClient] = useState("");
     const [sheetUrl, setSheetUrl] = useState("");
 
@@ -1263,60 +1095,140 @@ function SettingsPanel({ clients, saveClients, namingStructure, saveNamingStruct
         saveNamingStructure(newOrder);
     };
 
+    const tabs = [
+        { id: 'templates', label: 'Templates', icon: Folder },
+        { id: 'naming', label: 'Naming Convention', icon: Edit2 },
+        { id: 'clients', label: 'Clients', icon: User },
+    ];
+
     return (
-        <div className="w-full space-y-8">
-            {/* Naming Structure Config */}
-            <div className="space-y-4">
-                <h3 className="font-medium text-sm">Folder Naming Convention</h3>
-                <div className="p-4 border rounded-md bg-muted/20 space-y-2">
-                    <p className="text-xs text-muted-foreground mb-4">Rearrange the tokens to change the folder name format.</p>
-                    {namingStructure && namingStructure.map((token, index) => (
-                        <div key={token} className="flex items-center justify-between p-2 bg-card border rounded shadow-sm">
-                            <span className="text-xs font-mono font-bold bg-primary/10 text-primary px-2 py-1 rounded">{token}</span>
-                            <div className="flex gap-1">
-                                <Button variant="ghost" size="icon" className="h-6 w-6" disabled={index === 0} onClick={() => moveToken(index, 'up')}>
-                                    <ChevronDown className="w-3 h-3 rotate-180" />
-                                </Button>
-                                <Button variant="ghost" size="icon" className="h-6 w-6" disabled={index === namingStructure.length - 1} onClick={() => moveToken(index, 'down')}>
-                                    <ChevronDown className="w-3 h-3" />
-                                </Button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+        <div className="flex h-[500px] gap-6">
+            {/* Sidebar */}
+            <div className="w-48 flex flex-col gap-1 pr-4 border-r border-white/5">
+                {tabs.map(tab => (
+                    <button
+                        key={tab.id}
+                        onClick={() => setActiveSettingsTab(tab.id)}
+                        className={cn(
+                            "flex items-center gap-3 px-3 py-2 text-sm rounded-md transition-all text-left",
+                            activeSettingsTab === tab.id
+                                ? "bg-primary text-primary-foreground font-medium"
+                                : "text-muted-foreground hover:bg-white/5 hover:text-white"
+                        )}
+                    >
+                        <tab.icon className="w-4 h-4" />
+                        {tab.label}
+                    </button>
+                ))}
             </div>
 
-            <div className="space-y-4">
-                <h3 className="font-medium text-sm">Clients Management</h3>
-                <div className="flex gap-2">
-                    <Input value={newClient} onChange={e => setNewClient(e.target.value)} placeholder="Add Client Name" />
-                    <Button onClick={addClient}><Plus className="w-4 h-4" /></Button>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                    <Card>
-                        <CardHeader><CardTitle className="text-sm">Import CSV</CardTitle></CardHeader>
-                        <CardContent>
-                            <Input type="file" accept=".csv" onChange={handleFileUpload} />
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardHeader><CardTitle className="text-sm">Google Sheets</CardTitle></CardHeader>
-                        <CardContent className="flex gap-2">
-                            <Input value={sheetUrl} onChange={e => setSheetUrl(e.target.value)} placeholder="Sheet URL" />
-                            <Button onClick={handleInfoSheet}><RefreshCw className="w-4 h-4" /></Button>
-                        </CardContent>
-                    </Card>
-                </div>
-
-                <div className="border rounded-md p-4 h-[300px] overflow-y-auto space-y-2">
-                    {clients.map(c => (
-                        <div key={c} className="flex justify-between items-center text-sm p-2 bg-muted/50 rounded">
-                            <span>{c}</span>
-                            <Button variant="ghost" size="icon" onClick={() => removeClient(c)} className="h-6 w-6 hover:text-red-500"><Trash2 className="w-3 h-3" /></Button>
+            {/* Content Area */}
+            <div className="flex-1 overflow-y-auto pr-2">
+                {activeSettingsTab === 'templates' && (
+                    <div className="space-y-4 animate-in fade-in slide-in-from-right-2 duration-300">
+                        <div className="space-y-1 mb-6">
+                            <h3 className="font-medium">Templates</h3>
+                            <p className="text-xs text-muted-foreground">Manage your folder structure templates.</p>
                         </div>
-                    ))}
-                </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <Card onClick={onImportTemplate} className="cursor-pointer hover:bg-muted/50 transition-colors group border-dashed">
+                                <CardHeader className="flex flex-col items-center justify-center py-8 space-y-2 text-center">
+                                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                                        <Upload className="h-5 w-5 text-primary" />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <CardTitle className="text-sm font-medium">Import Template</CardTitle>
+                                        <p className="text-xs text-muted-foreground">Load a .json file</p>
+                                    </div>
+                                </CardHeader>
+                            </Card>
+                            <Card onClick={onExportTemplate} className="cursor-pointer hover:bg-muted/50 transition-colors group border-dashed">
+                                <CardHeader className="flex flex-col items-center justify-center py-8 space-y-2 text-center">
+                                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                                        <Download className="h-5 w-5 text-primary" />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <CardTitle className="text-sm font-medium">Export Current</CardTitle>
+                                        <p className="text-xs text-muted-foreground">Save as .json</p>
+                                    </div>
+                                </CardHeader>
+                            </Card>
+                        </div>
+                    </div>
+                )}
+
+                {activeSettingsTab === 'naming' && (
+                    <div className="space-y-4 animate-in fade-in slide-in-from-right-2 duration-300">
+                        <div className="space-y-1 mb-6">
+                            <h3 className="font-medium">Naming Convention</h3>
+                            <p className="text-xs text-muted-foreground">Customize how project folders are named.</p>
+                        </div>
+
+                        <div className="p-1 border rounded-md bg-muted/20 space-y-2">
+                            {namingStructure && namingStructure.map((token, index) => (
+                                <div key={token} className="flex items-center justify-between p-3 bg-card border rounded shadow-sm">
+                                    <div className="flex items-center gap-3">
+                                        <span className="text-xs font-mono font-bold bg-primary/10 text-primary px-2 py-1 rounded">{token}</span>
+                                        <span className="text-xs text-muted-foreground">
+                                            {token === 'CLIENT' ? 'e.g. Nike' :
+                                                token === 'PROJECT' ? 'e.g. Summer Campaign' :
+                                                    token === 'TYPE' ? 'e.g. Commercial' :
+                                                        token === 'DATE' ? 'DD-MM-YY' : ''}
+                                        </span>
+                                    </div>
+                                    <div className="flex gap-1">
+                                        <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-muted" disabled={index === 0} onClick={() => moveToken(index, 'up')}>
+                                            <ChevronDown className="w-4 h-4 rotate-180" />
+                                        </Button>
+                                        <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-muted" disabled={index === namingStructure.length - 1} onClick={() => moveToken(index, 'down')}>
+                                            <ChevronDown className="w-4 h-4" />
+                                        </Button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {activeSettingsTab === 'clients' && (
+                    <div className="space-y-6 animate-in fade-in slide-in-from-right-2 duration-300">
+                        <div className="space-y-1">
+                            <h3 className="font-medium">Clients</h3>
+                            <p className="text-xs text-muted-foreground">Manage your client list for quick selection.</p>
+                        </div>
+
+                        <div className="flex gap-2">
+                            <Input value={newClient} onChange={e => setNewClient(e.target.value)} placeholder="Enter new client name..." className="bg-muted/50" />
+                            <Button onClick={addClient}><Plus className="w-4 h-4 mr-2" /> Add</Button>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <Card className="bg-muted/5 border-dashed">
+                                <CardHeader className="p-4"><CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Import CSV</CardTitle></CardHeader>
+                                <CardContent className="p-4 pt-0">
+                                    <Input type="file" accept=".csv" onChange={handleFileUpload} className="h-8 text-xs" />
+                                </CardContent>
+                            </Card>
+                            <Card className="bg-muted/5 border-dashed">
+                                <CardHeader className="p-4"><CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Sync Google Sheet</CardTitle></CardHeader>
+                                <CardContent className="flex gap-2 p-4 pt-0">
+                                    <Input value={sheetUrl} onChange={e => setSheetUrl(e.target.value)} placeholder="Sheet URL" className="h-8 text-xs" />
+                                    <Button size="sm" variant="secondary" onClick={handleInfoSheet}><RefreshCw className="w-3 h-3" /></Button>
+                                </CardContent>
+                            </Card>
+                        </div>
+
+                        <div className="border rounded-md divide-y divide-white/5 bg-muted/10">
+                            {clients.map(c => (
+                                <div key={c} className="flex justify-between items-center text-sm p-3 hover:bg-white/5 transition-colors group">
+                                    <span className="font-medium">{c}</span>
+                                    <Button variant="ghost" size="icon" onClick={() => removeClient(c)} className="h-8 w-8 opacity-0 group-hover:opacity-100 hover:text-red-500 hover:bg-red-500/10 transition-all"><Trash2 className="w-4 h-4" /></Button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     )

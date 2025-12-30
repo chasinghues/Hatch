@@ -1,0 +1,414 @@
+{
+    "defaults": [
+        {
+            "name": "Professional (Default)",
+            "structure": [
+                {
+                    "id": "01_FOOTAGE",
+                    "name": "01_FOOTAGE",
+                    "checked": true,
+                    "children": []
+                },
+                {
+                    "id": "02_PROXIES",
+                    "name": "02_PROXIES",
+                    "checked": true,
+                    "children": []
+                },
+                {
+                    "id": "03_AUDIO",
+                    "name": "03_AUDIO",
+                    "checked": true,
+                    "children": [
+                        {
+                            "id": "03_AUDIO/SFX",
+                            "name": "SFX",
+                            "checked": true,
+                            "children": []
+                        },
+                        {
+                            "id": "03_AUDIO/MUSIC",
+                            "name": "MUSIC",
+                            "checked": true,
+                            "children": []
+                        },
+                        {
+                            "id": "03_AUDIO/VO",
+                            "name": "VO",
+                            "checked": true,
+                            "children": []
+                        }
+                    ]
+                },
+                {
+                    "id": "04_VFX",
+                    "name": "04_VFX",
+                    "checked": true,
+                    "children": [
+                        {
+                            "id": "04_VFX/COMPS",
+                            "name": "COMPS",
+                            "checked": true,
+                            "children": []
+                        },
+                        {
+                            "id": "04_VFX/IN",
+                            "name": "IN",
+                            "checked": true,
+                            "children": []
+                        },
+                        {
+                            "id": "04_VFX/OUT",
+                            "name": "OUT",
+                            "checked": true,
+                            "children": []
+                        }
+                    ]
+                },
+                {
+                    "id": "05_COLOR",
+                    "name": "05_COLOR",
+                    "checked": true,
+                    "children": []
+                },
+                {
+                    "id": "06_ASSETS",
+                    "name": "06_ASSETS",
+                    "checked": true,
+                    "children": [
+                        {
+                            "id": "06_ASSETS/STILLS",
+                            "name": "STILLS",
+                            "checked": true,
+                            "children": []
+                        },
+                        {
+                            "id": "06_ASSETS/GRAPHICS",
+                            "name": "GRAPHICS",
+                            "checked": true,
+                            "children": []
+                        },
+                        {
+                            "id": "06_ASSETS/LOGOS",
+                            "name": "LOGOS",
+                            "checked": true,
+                            "children": []
+                        }
+                    ]
+                },
+                {
+                    "id": "08_EXPORTS",
+                    "name": "08_EXPORTS",
+                    "checked": true,
+                    "children": []
+                },
+                {
+                    "id": "09_DOCUMENTS",
+                    "name": "09_DOCUMENTS",
+                    "checked": true,
+                    "children": []
+                }
+            ]
+        },
+        {
+            "name": "Social Media (Short Form)",
+            "structure": [
+                {
+                    "id": "01_RAW",
+                    "name": "01_RAW",
+                    "checked": true,
+                    "children": []
+                },
+                {
+                    "id": "02_ASSETS",
+                    "name": "02_ASSETS",
+                    "checked": true,
+                    "children": [
+                        {
+                            "id": "02_ASSETS/AUDIO",
+                            "name": "AUDIO",
+                            "checked": true,
+                            "children": []
+                        },
+                        {
+                            "id": "02_ASSETS/GRAPHICS",
+                            "name": "GRAPHICS",
+                            "checked": true,
+                            "children": []
+                        },
+                        {
+                            "id": "02_ASSETS/FONTS",
+                            "name": "FONTS",
+                            "checked": true,
+                            "children": []
+                        }
+                    ]
+                },
+                {
+                    "id": "03_PROJECTS",
+                    "name": "03_PROJECTS",
+                    "checked": true,
+                    "children": []
+                },
+                {
+                    "id": "04_EXPORTS",
+                    "name": "04_EXPORTS",
+                    "checked": true,
+                    "children": [
+                        {
+                            "id": "04_EXPORTS/DRAFTS",
+                            "name": "DRAFTS",
+                            "checked": true,
+                            "children": []
+                        },
+                        {
+                            "id": "04_EXPORTS/FINAL",
+                            "name": "FINAL",
+                            "checked": true,
+                            "children": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Documentary / Feature",
+            "structure": [
+                {
+                    "id": "00_ADMIN",
+                    "name": "00_ADMIN",
+                    "checked": true,
+                    "children": [
+                        {
+                            "id": "00_ADMIN/AGREEMENTS",
+                            "name": "AGREEMENTS",
+                            "checked": true,
+                            "children": []
+                        },
+                        {
+                            "id": "00_ADMIN/SCRIPTS",
+                            "name": "SCRIPTS",
+                            "checked": true,
+                            "children": []
+                        },
+                        {
+                            "id": "00_ADMIN/LOGS",
+                            "name": "LOGS",
+                            "checked": true,
+                            "children": []
+                        }
+                    ]
+                },
+                {
+                    "id": "01_FOOTAGE",
+                    "name": "01_FOOTAGE",
+                    "checked": true,
+                    "children": [
+                        {
+                            "id": "01_FOOTAGE/INTERVIEWS",
+                            "name": "INTERVIEWS",
+                            "checked": true,
+                            "children": []
+                        },
+                        {
+                            "id": "01_FOOTAGE/BROLL",
+                            "name": "BROLL",
+                            "checked": true,
+                            "children": []
+                        },
+                        {
+                            "id": "01_FOOTAGE/ARCHIVAL",
+                            "name": "ARCHIVAL",
+                            "checked": true,
+                            "children": []
+                        },
+                        {
+                            "id": "01_FOOTAGE/DRONE",
+                            "name": "DRONE",
+                            "checked": true,
+                            "children": []
+                        }
+                    ]
+                },
+                {
+                    "id": "02_AUDIO",
+                    "name": "02_AUDIO",
+                    "checked": true,
+                    "children": [
+                        {
+                            "id": "02_AUDIO/INTERVIEWS",
+                            "name": "INTERVIEWS",
+                            "checked": true,
+                            "children": []
+                        },
+                        {
+                            "id": "02_AUDIO/MUSIC",
+                            "name": "MUSIC",
+                            "checked": true,
+                            "children": []
+                        },
+                        {
+                            "id": "02_AUDIO/SFX",
+                            "name": "SFX",
+                            "checked": true,
+                            "children": []
+                        }
+                    ]
+                },
+                {
+                    "id": "03_PROJECTS",
+                    "name": "03_PROJECTS",
+                    "checked": true,
+                    "children": []
+                },
+                {
+                    "id": "04_GRAPHICS",
+                    "name": "04_GRAPHICS",
+                    "checked": true,
+                    "children": []
+                },
+                {
+                    "id": "05_EXPORTS",
+                    "name": "05_EXPORTS",
+                    "checked": true,
+                    "children": []
+                }
+            ]
+        },
+        {
+            "name": "VFX Pipeline",
+            "structure": [
+                {
+                    "id": "01_IN",
+                    "name": "01_IN",
+                    "checked": true,
+                    "children": [
+                        {
+                            "id": "01_IN/PLATES",
+                            "name": "PLATES",
+                            "checked": true,
+                            "children": []
+                        },
+                        {
+                            "id": "01_IN/REF",
+                            "name": "REF",
+                            "checked": true,
+                            "children": []
+                        },
+                        {
+                            "id": "01_IN/LUTS",
+                            "name": "LUTS",
+                            "checked": true,
+                            "children": []
+                        }
+                    ]
+                },
+                {
+                    "id": "02_WORK",
+                    "name": "02_WORK",
+                    "checked": true,
+                    "children": [
+                        {
+                            "id": "02_WORK/3D",
+                            "name": "3D",
+                            "checked": true,
+                            "children": []
+                        },
+                        {
+                            "id": "02_WORK/COMP",
+                            "name": "COMP",
+                            "checked": true,
+                            "children": []
+                        },
+                        {
+                            "id": "02_WORK/TRACKING",
+                            "name": "TRACKING",
+                            "checked": true,
+                            "children": []
+                        }
+                    ]
+                },
+                {
+                    "id": "03_RENDER",
+                    "name": "03_RENDER",
+                    "checked": true,
+                    "children": [
+                        {
+                            "id": "03_RENDER/WIP",
+                            "name": "WIP",
+                            "checked": true,
+                            "children": []
+                        },
+                        {
+                            "id": "03_RENDER/PRECOMP",
+                            "name": "PRECOMP",
+                            "checked": true,
+                            "children": []
+                        }
+                    ]
+                },
+                {
+                    "id": "04_OUT",
+                    "name": "04_OUT",
+                    "checked": true,
+                    "children": []
+                }
+            ]
+        },
+        {
+            "name": "Color Grading Suite",
+            "structure": [
+                {
+                    "id": "01_CONFORM",
+                    "name": "01_CONFORM",
+                    "checked": true,
+                    "children": [
+                        {
+                            "id": "01_CONFORM/XML_EDL",
+                            "name": "XML_EDL",
+                            "checked": true,
+                            "children": []
+                        },
+                        {
+                            "id": "01_CONFORM/REFERENCE",
+                            "name": "REFERENCE",
+                            "checked": true,
+                            "children": []
+                        }
+                    ]
+                },
+                {
+                    "id": "02_SOURCE",
+                    "name": "02_SOURCE",
+                    "checked": true,
+                    "children": []
+                },
+                {
+                    "id": "03_RENDER",
+                    "name": "03_RENDER",
+                    "checked": true,
+                    "children": [
+                        {
+                            "id": "03_RENDER/MASTER",
+                            "name": "MASTER",
+                            "checked": true,
+                            "children": []
+                        },
+                        {
+                            "id": "03_RENDER/DSM",
+                            "name": "DSM",
+                            "checked": true,
+                            "children": []
+                        },
+                        {
+                            "id": "03_RENDER/WEB",
+                            "name": "WEB",
+                            "checked": true,
+                            "children": []
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

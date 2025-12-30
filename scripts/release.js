@@ -3,9 +3,9 @@ const path = require('path');
 
 const TOKEN = process.env.GITHUB_TOKEN;
 const REPO = 'chasinghues/Hatch';
-const TAG = 'v1.0.10';
-const RELEASE_NAME = 'Hatch v1.0.10';
-const BODY = `### Release Notes: Hatch v1.0.10
+const TAG = 'v1.0.11';
+const RELEASE_NAME = 'Hatch v1.0.11';
+const BODY = `### Release Notes: Hatch v1.0.11
 
 **Summary**
 This release introduces a significant visual overhaul with a premium dark theme, new typography, and improved component polish. It also addresses several key bugs in the Ingest workflow and project management, alongside performance optimizations.
