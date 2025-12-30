@@ -3,20 +3,44 @@ const path = require('path');
 
 const TOKEN = process.env.GITHUB_TOKEN;
 const REPO = 'chasinghues/Hatch';
-const TAG = 'v1.0.9'; // Incrementing to ensure clean slate for all assets
-const RELEASE_NAME = 'Hatch v1.0.9';
-const BODY = `Platform specific releases:
+const TAG = 'v1.0.10';
+const RELEASE_NAME = 'Hatch v1.0.10';
+const BODY = `### Release Notes: Hatch v1.0.10
 
-- Windows (x64 Setup)
-- macOS (Apple Silicon & Universal DMG)
-- Linux (AppImage & Deb)
+**Summary**
+This release introduces a significant visual overhaul with a premium dark theme, new typography, and improved component polish. It also addresses several key bugs in the Ingest workflow and project management, alongside performance optimizations.
 
-## 🍎 macOS User Instructions
-If you see a "Damage" error or "Can't be opened" message, please run this terminal command to allow the app:
-\`\`\`bash
-sudo xattr -cr /Applications/Hatch.app
-\`\`\`
-This is required because the app is currently self-signed.`;
+**Bug Fixes**
+*   **Project Actions:** Fixed the "Open in Finder" issue where the button was unresponsive for certain project types.
+*   **Ingest Interface:** Resolved layout inconsistencies in the Ingest Details "Structure" tab to ensure correct padding and alignment.
+*   **Build Artifacts:** Fixed a critical issue where application icons were missing or rendering incorrectly in production builds.
+
+**Feature Additions**
+*   **Premium UI Overhaul:**
+    *   **Dark Theme:** Implemented a unified, high-contrast dark theme across the entire application interface.
+    *   **Typography:** Updated the application font to **Inter**, improving readability and modernizing the aesthetic.
+    *   **Component Styling:** Refined borders, inputs, and checkbox scales for a cleaner, more professional look.
+*   **Ingest Hub:** Introduced the \`IngestHub\` and improved directory structure visualization for better project import management.
+*   **Optimization:** Reduced application bundle size for improved startup performance.
+
+**Mac Installation Notes**
+
+**Option 1: Standard Method (Click)**
+1.  Download the \`Hatch-1.0.10-universal.dmg\` file.
+2.  Double-click the \`.dmg\` file and drag **Hatch** to your **Applications** folder.
+3.  **Right-click** (or Control-click) the Hatch app in your Applications folder and select **Open**.
+4.  Click **Open** in the security dialog to bypass the check.
+
+**Option 2: Terminal Method (Bypass Code Signing)**
+If you prefer to completely remove the security quarantine attribute via the terminal (useful if the app is damaged or refuses to open), follow these steps:
+
+1.  Drag **Hatch** to your **Applications** folder.
+2.  Open **Terminal**.
+3.  Run the following command:
+    \`\`\`bash
+    xattr -cr /Applications/Hatch.app
+    \`\`\`
+4.  You can now open the app normally.`;
 
 async function getOrCreateRelease() {
     console.log(`Checking for release ${TAG}...`);
