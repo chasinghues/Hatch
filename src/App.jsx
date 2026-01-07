@@ -27,8 +27,8 @@ import defaultProjectTypes from "@/data/projectTypes.json"
 import { NodeList } from "@/components/DirectoryStructure"
 
 // --- Constants ---
-// Gist URL for Project Types. Update this to your raw gist URL.
 const PROJECT_TYPES_GIST_URL = "https://gist.githubusercontent.com/chasinghues/02988fe587552bd2ade5fc1fbdbb4cc0/raw/1a2a006a30aa63b1971ecd0adf607cec6ad21eb6/Project%2520Types";
+const TEMPLATES_GIST_URL = "https://gist.githubusercontent.com/chasinghues/8646b4a51a39315dada44b80853367ed/raw/55be34087ac16002e753035b3e18f8cc8dce6638/TemplateTypes.json";
 
 const INITIAL_STRUCTURE = defaultTemplates.defaults[0].structure;
 
@@ -174,8 +174,9 @@ function MainApp() {
     const [projectTypesList, setProjectTypesList] = useState(defaultProjectTypes);
     const [isProjectTypeOpen, setIsProjectTypeOpen] = useState(false);
 
-    // Fetch Project Types from Gist or Store
+    // Fetch Project Types and Templates from Gist or Store
     useEffect(() => {
+        // Fetch Project Types
         if (PROJECT_TYPES_GIST_URL) {
             fetch(PROJECT_TYPES_GIST_URL)
                 .then(res => res.json())
@@ -186,18 +187,39 @@ function MainApp() {
                     }
                 })
                 .catch(err => console.error("Failed to fetch Project Types Gist:", err));
-        } else {
-            if (window.electronAPI) {
-                window.electronAPI.storeGet('projectTypes').then(res => {
-                    // If we have stored types, use them, otherwise defaultProjectTypes is already valid.
-                    // Merging or replacing? Replacing allows updates via caching logic if we implemented a Gist check.
-                    // For now, if stored exists, use it? Or favor local file default?
-                    // The requirement is "access from gist... fetch first time".
-                    // If no Gist URL, we rely on local file.
-                    // If store has data (maybe from previous Gist fetch), use it.
-                    if (res && Array.isArray(res)) setProjectTypesList(res.sort());
-                });
-            }
+        } else if (window.electronAPI) {
+            window.electronAPI.storeGet('projectTypes').then(res => {
+                if (res && Array.isArray(res)) setProjectTypesList(res.sort());
+            });
+        }
+
+        // Fetch Templates
+        if (TEMPLATES_GIST_URL) {
+            fetch(TEMPLATES_GIST_URL)
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.defaults) {
+                        const gistTemplates = data.defaults;
+                        if (window.electronAPI) {
+                            window.electronAPI.storeGet('templates').then(savedTemplates => {
+                                const current = (savedTemplates && Array.isArray(savedTemplates)) ? savedTemplates : [];
+                                const merged = [...current];
+                                let hasChanges = false;
+                                gistTemplates.forEach(t => {
+                                    if (!merged.find(m => m.name === t.name)) {
+                                        merged.push(t);
+                                        hasChanges = true;
+                                    }
+                                });
+                                if (hasChanges || current.length === 0) {
+                                    setTemplates(merged);
+                                    window.electronAPI.storeSet('templates', merged);
+                                }
+                            });
+                        }
+                    }
+                })
+                .catch(err => console.error("Failed to fetch Templates Gist:", err));
         }
     }, []);
 
@@ -222,41 +244,29 @@ function MainApp() {
                 if (res && Array.isArray(res)) setNamingStructure(res);
             });
             window.electronAPI.storeGet('templates').then(res => {
-                // ... (existing template defaults logic)
-                const defaults = [
-                    { name: "Professional (Default)", structure: INITIAL_STRUCTURE },
-                    // ... (keep all defaults)
-                ];
-                // For brevity in replacement, assuming logic remains identical
-                // In actual tool execution, I will preserve the existing logic by careful START/END lines
-                // But for this replacement, I need to be careful not to delete the template initialization logic if I touch it.
-                // Since I am replacing the `return` statement mostly, I will try to leave the state init logic alone if possible.
-                // However, I need to inject the Sidebar.
-
-                // Let's just fix the template loading logic to be robust in the replacement if I touch it.
-                // Actually, I will target the `return` block mainly to inject the Sidebar.
-
-                // Re-implementing just the necessary parts to ensure context is valid.
-                const defaults_ = defaultTemplates.defaults;
-
+                const localDefaults = defaultTemplates.defaults;
                 const saved = (res && Array.isArray(res)) ? res : [];
-                const merged = [...saved];
-                let hasChanges = false;
-                defaults_.forEach(d => {
-                    if (!merged.find(t => t.name === d.name)) {
-                        merged.push(d);
-                        hasChanges = true;
+
+                // If we don't have a Gist URL, we rely on local templates.json as fallback
+                if (!TEMPLATES_GIST_URL) {
+                    const merged = [...saved];
+                    let hasChanges = false;
+                    localDefaults.forEach(d => {
+                        if (!merged.find(t => t.name === d.name)) {
+                            merged.push(d);
+                            hasChanges = true;
+                        }
+                    });
+                    if (hasChanges || merged.length === 0) {
+                        setTemplates(merged);
+                        window.electronAPI.storeSet('templates', merged);
+                        return;
                     }
-                });
-                if (hasChanges || merged.length === 0) {
-                    setTemplates(merged);
-                    window.electronAPI.storeSet('templates', merged);
-                } else {
-                    setTemplates(saved);
                 }
+                setTemplates(saved);
             });
         }
-    }, []);
+    }, [TEMPLATES_GIST_URL]);
 
     const saveClients = (newClients) => {
         setClients(newClients);

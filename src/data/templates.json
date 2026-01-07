@@ -114,8 +114,8 @@
             "name": "Social Media (Short Form)",
             "structure": [
                 {
-                    "id": "01_RAW",
-                    "name": "01_RAW",
+                    "id": "01_FOOTAGE",
+                    "name": "01_FOOTAGE",
                     "checked": true,
                     "children": []
                 },
