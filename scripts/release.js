@@ -3,40 +3,36 @@ const path = require('path');
 
 const TOKEN = process.env.GITHUB_TOKEN;
 const REPO = 'chasinghues/Hatch';
-const TAG = 'v1.0.11';
-const RELEASE_NAME = 'Hatch v1.0.11';
-const BODY = `### Release Notes: Hatch v1.0.11
+const TAG = 'v1.0.12';
+const RELEASE_NAME = 'Hatch v1.0.12';
+const BODY = `### Release Notes: Hatch v1.0.12
 
 **Summary**
-This release introduces a significant visual overhaul with a premium dark theme, new typography, and improved component polish. It also addresses several key bugs in the Ingest workflow and project management, alongside performance optimizations.
+This update introduces dynamic configuration capabilities, allowing Hatch to sync project types and directory structures directly from GitHub Gists. This enables seamless updates to standardized workflows across multiple installations without requiring a manual app update.
 
 **Bug Fixes**
-*   **Project Actions:** Fixed the "Open in Finder" issue where the button was unresponsive for certain project types.
-*   **Ingest Interface:** Resolved layout inconsistencies in the Ingest Details "Structure" tab to ensure correct padding and alignment.
-*   **Build Artifacts:** Fixed a critical issue where application icons were missing or rendering incorrectly in production builds.
+*   **Template Persistence:** Fixed a bug where default templates were sometimes re-added to the user's list on every launch, causing duplicates.
+*   **First-Run Experience:** Resolved an issue where the initial download of project structures would fail to cache correctly on some systems.
+*   **Sync Logic:** Improved the robustness of the remote-fetch mechanism to handle network timeouts gracefully without blocking the UI.
 
 **Feature Additions**
-*   **Premium UI Overhaul:**
-    *   **Dark Theme:** Implemented a unified, high-contrast dark theme across the entire application interface.
-    *   **Typography:** Updated the application font to **Inter**, improving readability and modernizing the aesthetic.
-    *   **Component Styling:** Refined borders, inputs, and checkbox scales for a cleaner, more professional look.
-*   **Ingest Hub:** Introduced the \`IngestHub\` and improved directory structure visualization for better project import management.
-*   **Optimization:** Reduced application bundle size for improved startup performance.
+*   **Dynamic Gist Synchronization:**
+    *   **Remote Templates:** The app now automatically pulls the latest directory structures from your central GitHub Gist (\`TemplateTypes.json\`).
+    *   **Live Project Types:** Project types are now fetched dynamically, ensuring any organizational additions are instantly available to users.
+*   **Standardized Fallbacks:** Implemented a robust "local-first" fallback system that ensures the app remains fully functional using built-in defaults if the user is offline.
+*   **UI Polish:** Minor refinements to the template selection dropdown for better readability of long template names.
 
-**Mac Installation Notes**
+**Notes for Mac Installation**
 
-**Option 1: Standard Method (Click)**
-1.  Download the \`Hatch-1.0.10-universal.dmg\` file.
-2.  Double-click the \`.dmg\` file and drag **Hatch** to your **Applications** folder.
-3.  **Right-click** (or Control-click) the Hatch app in your Applications folder and select **Open**.
-4.  Click **Open** in the security dialog to bypass the check.
+Since Hatch is a specialized productivity tool distributed independently, macOS requires a one-time permission to run the "unidentified" binary:
 
-**Option 2: Terminal Method (Bypass Code Signing)**
-If you prefer to completely remove the security quarantine attribute via the terminal (useful if the app is damaged or refuses to open), follow these steps:
+1.  **The "Right-Click" Method (Recommended):**
+    *   Download \`Hatch-1.0.12-universal.dmg\` and drag the **Hatch** icon to your **Applications** folder.
+    *   **Right-click** (or Control-click) the Hatch app in your Applications folder and select **Open**.
+    *   Click **Open** on the security warning dialog. *You will only need to do this once.*
 
-1.  Drag **Hatch** to your **Applications** folder.
-2.  Open **Terminal**.
-3.  Run the following command:
+2.  **The Terminal Method (Bypass):**
+    *   If you see a message saying the app "is damaged" or cannot be verified, open your Terminal and run:
     \`\`\`bash
     xattr -cr /Applications/Hatch.app
     \`\`\`
