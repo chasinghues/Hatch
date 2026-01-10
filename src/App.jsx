@@ -178,6 +178,10 @@ function MainApp() {
 
     const [selectedTemplateName, setSelectedTemplateName] = useState(INITIAL_TEMPLATE_NAME);
 
+    // Filter Search States
+    const [clientSearch, setClientSearch] = useState("");
+    const [typeSearch, setTypeSearch] = useState("");
+
     const syncGistData = async (silent = false, baseTemplates = null) => {
         if (!window.electronAPI) return;
         if (!silent) toast({ title: "Syncing...", description: "Fetching latest templates from Gist." });
@@ -276,7 +280,10 @@ function MainApp() {
 
             // 3. Load Project Types
             const savedTypes = await window.electronAPI.storeGet('projectTypes');
-            if (savedTypes && Array.isArray(savedTypes)) setProjectTypesList(savedTypes.sort());
+            if (savedTypes && Array.isArray(savedTypes)) {
+                const sortedTypes = savedTypes.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+                setProjectTypesList(sortedTypes);
+            }
 
             // 4. Fetch Gist Updates (Asynchronously)
             syncGistData(true, currentTemplates);
@@ -286,8 +293,12 @@ function MainApp() {
                     .then(res => res.json())
                     .then(data => {
                         if (Array.isArray(data)) {
-                            setProjectTypesList(data.sort());
-                            window.electronAPI.storeSet('projectTypes', data);
+                            setProjectTypesList(prev => {
+                                const merged = Array.from(new Set([...prev, ...data]));
+                                const sorted = merged.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+                                window.electronAPI.storeSet('projectTypes', sorted);
+                                return sorted;
+                            });
                         }
                     })
                     .catch(err => console.error("Gist project types fetch failed:", err));
@@ -309,8 +320,9 @@ function MainApp() {
     }, [projectName, clientName, projectType, date]);
 
     const saveClients = (newClients) => {
-        setClients(newClients);
-        if (window.electronAPI) window.electronAPI.storeSet('clients', newClients);
+        const sorted = Array.from(new Set(newClients)).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+        setClients(sorted);
+        if (window.electronAPI) window.electronAPI.storeSet('clients', sorted);
     };
 
     const saveTemplates = (newTemplates) => {
@@ -321,6 +333,12 @@ function MainApp() {
     const saveNamingStructure = (newStructure) => {
         setNamingStructure(newStructure);
         if (window.electronAPI) window.electronAPI.storeSet('namingStructure', newStructure);
+    };
+
+    const saveProjectTypes = (newTypes) => {
+        const sorted = Array.from(new Set(newTypes)).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+        setProjectTypesList(sorted);
+        if (window.electronAPI) window.electronAPI.storeSet('projectTypes', sorted);
     };
 
     // Logic
@@ -607,9 +625,31 @@ function MainApp() {
                                             </PopoverTrigger>
                                             <PopoverContent className="w-[380px] p-0">
                                                 <Command>
-                                                    <CommandInput placeholder="Search type..." />
+                                                    <CommandInput
+                                                        placeholder="Search type..."
+                                                        onValueChange={setTypeSearch}
+                                                    />
                                                     <CommandList>
-                                                        <CommandEmpty>No type found.</CommandEmpty>
+                                                        <CommandEmpty className="p-0">
+                                                            <div className="p-2 border-t border-white/5">
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    className="w-full justify-start text-primary hover:text-primary hover:bg-primary/10 gap-2 h-9 px-2 text-sm"
+                                                                    onClick={() => {
+                                                                        const newType = typeSearch.trim();
+                                                                        if (newType) {
+                                                                            saveProjectTypes([...projectTypesList, newType]);
+                                                                            setProjectType(newType);
+                                                                            setIsProjectTypeOpen(false);
+                                                                            setTypeSearch("");
+                                                                        }
+                                                                    }}
+                                                                >
+                                                                    <Plus className="h-4 w-4" />
+                                                                    Add "{typeSearch}"
+                                                                </Button>
+                                                            </div>
+                                                        </CommandEmpty>
                                                         <CommandGroup className="max-h-[200px] overflow-y-auto">
                                                             {projectTypesList.map((type) => (
                                                                 <CommandItem
@@ -618,6 +658,7 @@ function MainApp() {
                                                                     onSelect={() => {
                                                                         setProjectType(type);
                                                                         setIsProjectTypeOpen(false);
+                                                                        setTypeSearch("");
                                                                     }}
                                                                 >
                                                                     <Check
@@ -647,13 +688,43 @@ function MainApp() {
                                             </PopoverTrigger>
                                             <PopoverContent className="w-[350px] p-0">
                                                 <Command>
-                                                    <CommandInput placeholder="Search client..." />
+                                                    <CommandInput
+                                                        placeholder="Search client..."
+                                                        onValueChange={setClientSearch}
+                                                    />
                                                     <CommandList>
-                                                        <CommandEmpty>No client found.</CommandEmpty>
-                                                        <CommandGroup>
-                                                            <CommandItem value="none_clear" onSelect={() => { setClientName(""); setIsClientOpen(false); }}>None (Clear)</CommandItem>
+                                                        <CommandEmpty className="p-0">
+                                                            <div className="p-2 border-t border-white/5">
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    className="w-full justify-start text-primary hover:text-primary hover:bg-primary/10 gap-2 h-9 px-2 text-sm"
+                                                                    onClick={() => {
+                                                                        const clean = sanitizeClient(clientSearch);
+                                                                        if (clean) {
+                                                                            saveClients([...clients, clean]);
+                                                                            setClientName(clean);
+                                                                            setIsClientOpen(false);
+                                                                            setClientSearch("");
+                                                                        }
+                                                                    }}
+                                                                >
+                                                                    <Plus className="h-4 w-4" />
+                                                                    Add "{clientSearch}"
+                                                                </Button>
+                                                            </div>
+                                                        </CommandEmpty>
+                                                        <CommandGroup className="max-h-[250px] overflow-y-auto">
+                                                            <CommandItem value="none_clear" onSelect={() => { setClientName(""); setIsClientOpen(false); setClientSearch(""); }}>None (Clear)</CommandItem>
                                                             {clients.map((client) => (
-                                                                <CommandItem key={client} value={client.toLowerCase()} onSelect={() => { setClientName(client); setIsClientOpen(false); }}>
+                                                                <CommandItem
+                                                                    key={client}
+                                                                    value={client}
+                                                                    onSelect={() => {
+                                                                        setClientName(client);
+                                                                        setIsClientOpen(false);
+                                                                        setClientSearch("");
+                                                                    }}
+                                                                >
                                                                     <Check className={cn("mr-2 h-4 w-4", clientName === client ? "opacity-100" : "opacity-0")} />
                                                                     {client}
                                                                 </CommandItem>

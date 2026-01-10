@@ -4,274 +4,625 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hatch - The Modern Project Initializer</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap">
+    <title>Hatch — Technical Production Initialization & Media Ingest Engine</title>
+    <meta name="description"
+        content="The definitive open-source utility for high-end post-production. Automate project scaffolding, enforce naming conventions, and perform verified media offloads.">
+
+    <!-- Fonts: Outfit for Display, Inter for Utility -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <style>
+        :root {
+            --primary: #f97316;
+            --primary-glow: rgba(249, 115, 22, 0.3);
+            --bg: #030303;
+            --surface: #0a0a0a;
+            --surface-accent: #111111;
+            --border: rgba(255, 255, 255, 0.08);
+            --text-main: #ffffff;
+            --text-dim: #94bcbc;
+            /* Desaturated blue-grey for a professional look */
+            --text-muted: #64748b;
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
 
-        .glass {
-            background: rgba(255, 255, 255, 0.03);
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(3, 3, 3, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 1.25rem 0;
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+            color: white;
+            font-weight: 900;
+            font-size: 1.4rem;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .logo img {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+        /* Hero */
+        .hero {
+            position: relative;
+            padding: 14rem 0 10rem;
+            text-align: center;
+            background: radial-gradient(circle at 50% 0%, rgba(var(--primary), 0.05) 0%, transparent 70%),
+                url('assets/hero-bg.png') center/cover no-repeat;
+            background-blend-mode: overlay;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(3, 3, 3, 0.4) 0%, var(--bg) 95%);
+        }
+
+        .hero-inner {
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 10vw, 6rem);
+            line-height: 1;
+            margin-bottom: 2rem;
+            background: linear-gradient(to bottom, #fff 50%, #64748b 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.35rem;
+            color: #94a3b8;
+            max-width: 750px;
+            margin: 0 auto 3.5rem;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        .hero-downloads {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 4rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1.1rem 2.2rem;
+            border-radius: 100px;
+            font-weight: 700;
+            text-decoration: none;
+            font-size: 1.05rem;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .btn-mac {
+            background: white;
+            color: black;
+            box-shadow: 0 15px 35px rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-mac:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 45px rgba(255, 255, 255, 0.25);
+        }
+
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            border: 1px solid var(--border);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .glow {
-            box-shadow: 0 0 50px rgba(249, 115, 22, 0.15);
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Detail Sections */
+        .section-header {
+            text-align: center;
+            margin-bottom: 6rem;
+        }
+
+        .section-header h2 {
+            font-size: 3.5rem;
+            letter-spacing: -0.04em;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header p {
+            color: #64748b;
+            font-size: 1.25rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .spec-container {
+            padding: 8rem 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .spec-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center;
+        }
+
+        .spec-grid.reverse {
+            direction: rtl;
+        }
+
+        .spec-grid.reverse .spec-content {
+            direction: ltr;
+        }
+
+        .spec-content h3 {
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .spec-content p {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .feature-points {
+            list-style: none;
+            display: grid;
+            gap: 1rem;
+        }
+
+        .feature-points li {
+            display: flex;
+            gap: 1rem;
+            color: #e2e8f0;
+            font-weight: 500;
+        }
+
+        .feature-points i {
+            color: var(--primary);
+            margin-top: 0.3rem;
+            font-size: 1.1rem;
+        }
+
+        /* Visual Blocks */
+        .visual-display {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.6);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .directory-tree {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: #a1a1aa;
+        }
+
+        .tree-root {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .tree-item {
+            margin-left: 1.5rem;
+            padding: 0.4rem 0;
+            border-left: 1px solid #262626;
+            padding-left: 1rem;
+            position: relative;
+        }
+
+        .tree-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 1rem;
+            width: 0.5rem;
+            height: 1px;
+            background: #262626;
+        }
+
+        .tree-folder {
+            color: #d1d5db;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tree-folder i {
+            color: var(--primary);
+            opacity: 0.8;
+        }
+
+        /* Ingest Hub Visualization */
+        .ingest-card {
+            background: #000;
+            border: 1px solid #262626;
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-bottom: 0.75rem;
+            color: #94a3b8;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #1a1a1a;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary), #ef4444);
+            border-radius: 10px;
+            width: 68%;
+        }
+
+        .verified-list {
+            font-size: 0.75rem;
+            color: #475569;
+            display: grid;
+            gap: 0.4rem;
+        }
+
+        /* Detailed Feature List */
+        .all-features {
+            padding: 8rem 0;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .feature-list-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .feature-box {
+            padding: 2.5rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            transition: 0.3s;
+        }
+
+        .feature-box:hover {
+            border-color: rgba(var(--primary), 0.3);
+            background: var(--surface-accent);
+            transform: translateY(-5px);
+        }
+
+        .feature-box i {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-box h4 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-box p {
+            color: #64748b;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* Full Platform Grid */
+        .download-grid-section {
+            padding: 10rem 0;
+            text-align: center;
+        }
+
+        .download-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .dl-card {
+            background: #0a0a0a;
+            border: 1px solid var(--border);
+            padding: 3rem 2rem;
+            border-radius: 24px;
+            transition: 0.3s;
+            text-decoration: none;
+            color: white;
+        }
+
+        .dl-card:hover {
+            border-color: white;
+            background: #111;
+            transform: scale(1.02);
+        }
+
+        .dl-card i {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .dl-card span {
+            display: block;
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .dl-card small {
+            color: #64748b;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        footer {
+            padding: 8rem 0;
+            border-top: 1px solid var(--border);
+            color: #475569;
+            font-size: 0.9rem;
+        }
+
+        .footer-logo {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 900;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            text-decoration: none;
+        }
+
+        .philomina {
+            background: #0a0a0a;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-top: 4rem;
+            max-width: 600px;
+            font-style: italic;
+        }
+
+        @media (max-width: 968px) {
+            .spec-grid {
+                grid-template-columns: 1fr;
+                gap: 4rem;
+            }
+
+            .spec-grid.reverse {
+                direction: ltr;
+            }
+
+            .hero h1 {
+                font-size: 3.5rem;
+            }
+
+            .section-header h2 {
+                font-size: 2.5rem;
+            }
         }
     </style>
 </head>
 
-<body class="bg-[#0a0a0a] text-white min-h-screen selection:bg-orange-500/30">
+<body>
 
-    <!-- Navbar -->
-    <nav class="fixed w-full z-50 top-0 border-b border-white/5 bg-[#0a0a0a]/80 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <img src="assets/icon.png" alt="Hatch Logo" class="w-8 h-8 rounded-lg">
-                <span class="font-bold text-xl tracking-tight">Hatch</span>
-            </div>
-            <a href="https://github.com/chasinghues/Hatch" target="_blank"
-                class="text-gray-400 hover:text-white transition-colors">
-                GitHub
+    <nav>
+        <div class="container">
+            <a href="#" class="logo">
+                <img src="assets/icon.png" alt="Hatch App Icon">
+                <span>Hatch</span>
             </a>
+            <div class="nav-links">
+                <a href="#workflow">Workflow</a>
+                <a href="#technical">Technical Manual</a>
+                <a href="#downloads">Downloads</a>
+                <a href="https://github.com/chasinghues/Hatch" target="_blank"><i class="fab fa-github"></i> Source</a>
+            </div>
         </div>
     </nav>
 
-    <!-- Background Gradients -->
-    <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
-        <div
-            class="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] bg-blue-900/10 rounded-full blur-[120px] animate-pulse">
-        </div>
-        <div class="absolute top-[10%] right-[10%] w-[40%] h-[40%] bg-orange-500/10 rounded-full blur-[100px]"></div>
-        <div class="absolute -bottom-[20%] left-[20%] w-[60%] h-[60%] bg-black/50 rounded-full blur-[140px]"></div>
-    </div>
+    <section class="hero">
+        <div class="container hero-inner">
+            <h1>Industrial Post <br> Orchestration.</h1>
+            <p>Hatch is the technical backbone for film production folder architectures and media management. Designed
+                for DITs, post-supervisors, and editorial teams who demand structural parity.</p>
 
-    <!-- Hero -->
-    <main class="pt-32 pb-16 px-6 relative">
-        <div class="max-w-5xl mx-auto text-center">
-
-            <!-- Hero Icon with Extra Glow -->
-            <div class="mb-12 flex justify-center relative z-10">
-                <div class="relative group">
-                    <div
-                        class="absolute -inset-4 bg-gradient-to-br from-orange-600 via-red-900 to-black rounded-full blur-2xl opacity-50 group-hover:opacity-80 transition duration-700 animate-tilt">
-                    </div>
-                    <img src="assets/icon.png" alt="Hatch App Icon"
-                        class="relative w-32 h-32 rounded-[2rem] shadow-2xl transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-3 border border-white/10 ring-1 ring-white/20">
-                </div>
-            </div>
-
-            <div
-                class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-sm mb-8 hover:bg-white/10 transition-colors">
-                <span class="flex h-2 w-2 relative">
-                    <span
-                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
-                </span>
-                <span class="text-gray-300">v1.0.14 Released</span>
-                <span class="w-px h-3 bg-white/20 mx-1"></span>
-                <span
-                    class="bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent font-semibold">Gist
-                    Cloud Sync Now Live</span>
-            </div>
-
-            <h1 class="text-6xl md:text-8xl font-bold tracking-tight mb-8">
-                <span class="bg-gradient-to-b from-white to-white/70 bg-clip-text text-transparent">Scaffold
-                    projects</span>
-                <br>
-                <span
-                    class="bg-gradient-to-r from-orange-400 via-orange-600 to-red-700 bg-clip-text text-transparent">at
-                    lightspeed.</span>
-            </h1>
-
-            <p class="text-xl md:text-2xl text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed font-light">
-                The premium standard for project initialization. <br>
-                <span class="text-gray-200 font-normal">Visual directory management, smart ingest, and instant
-                    setup.</span>
-            </p>
-
-            <div class="flex flex-wrap items-center justify-center gap-4 mb-20">
-                <div class="flex flex-col gap-2">
-                    <a href="https://github.com/chasinghues/Hatch/releases/download/v1.0.14/Hatch-1.0.14-arm64.dmg"
-                        class="h-14 px-8 rounded-full bg-white text-black font-bold text-lg flex items-center gap-3 hover:bg-gray-100 transition-all hover:scale-105 active:scale-95 shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)]">
-                        <i class="fab fa-apple text-xl"></i>
-                        Mac (Apple Silicon)
-                    </a>
-                    <a href="https://github.com/chasinghues/Hatch/releases/download/v1.0.14/Hatch-1.0.14-universal.dmg"
-                        class="text-xs text-gray-500 hover:text-white transition-colors text-center">
-                        or Download for Intel Mac (Universal)
-                    </a>
-                </div>
-                <div class="flex flex-col gap-2">
-                    <a href="https://github.com/chasinghues/Hatch/releases/download/v1.0.14/Hatch-Setup-1.0.14.exe"
-                        class="h-14 px-8 rounded-full glass hover:bg-white/10 text-white font-semibold flex items-center gap-3 transition-all hover:scale-105 border-white/10">
-                        <i class="fab fa-windows text-xl"></i>
-                        Windows
-                    </a>
-                    <span class="text-xs text-transparent select-none text-center">.</span>
-                </div>
-                <div class="flex flex-col gap-2">
-                    <a href="https://github.com/chasinghues/Hatch/releases/download/v1.0.14/Hatch-1.0.14-x86_64.AppImage"
-                        class="h-14 px-8 rounded-full glass hover:bg-white/10 text-white font-semibold flex items-center gap-3 transition-all hover:scale-105 border-white/10">
-                        <i class="fab fa-linux text-xl"></i>
-                        Linux
-                    </a>
-                    <span class="text-xs text-transparent select-none text-center">.</span>
-                </div>
-            </div>
-
-            <!-- App Screenshot -->
-            <div class="relative group max-w-6xl mx-auto perspective-1000">
-                <!-- No background glow here -->
-
-                <!-- Window Frame -->
-                <div
-                    class="relative rounded-xl border border-white/10 bg-[#0a0a0a] overflow-hidden shadow-2xl transform transition-transform duration-700 hover:scale-[1.01]">
-                    <!-- Title Bar -->
-                    <div
-                        class="h-10 bg-[#161616]/90 backdrop-blur border-b border-white/5 flex items-center px-4 gap-2">
-                        <div class="w-3 h-3 rounded-full bg-[#FF5F57] shadow-inner"></div>
-                        <div class="w-3 h-3 rounded-full bg-[#FEBC2E] shadow-inner"></div>
-                        <div class="w-3 h-3 rounded-full bg-[#28C840] shadow-inner"></div>
-                        <div class="ml-4 text-xs font-medium text-gray-500 flex items-center gap-2">
-                            <span class="w-3 h-3 rounded bg-orange-500/20 flex items-center justify-center">
-                                <div class="w-1.5 h-1.5 rounded-full bg-orange-500"></div>
-                            </span>
-                            Hatch — Project Initializer
-                        </div>
-                    </div>
-                    <!-- Image -->
-                    <img src="assets/screenshot.png" alt="Hatch App Interface" class="w-full h-auto">
-                </div>
+            <div class="hero-downloads">
+                <a href="https://github.com/chasinghues/Hatch/releases/download/v1.0.14/Hatch-1.0.14-arm64.dmg"
+                    class="btn btn-mac">
+                    <i class="fab fa-apple"></i> Download for Mac (Apple Silicon)
+                </a>
+                <a href="https://github.com/chasinghues/Hatch/releases/download/v1.0.14/Hatch-Setup-1.0.14.exe"
+                    class="btn btn-outline">
+                    <i class="fab fa-windows"></i> Download for Windows
+                </a>
             </div>
         </div>
-    </main>
+    </section>
 
-    <!-- Detailed Features -->
-    <section class="py-24 px-6 border-t border-white/5 bg-white/5 relative overflow-hidden">
-        <div
-            class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-orange-500/50 to-transparent">
-        </div>
-        <div class="max-w-7xl mx-auto space-y-24">
+    <!-- Detailed Functional Specs -->
+    <section class="spec-container" id="workflow">
+        <div class="container">
 
-            <!-- Feature Block 1 -->
-            <div class="grid md:grid-cols-2 gap-12 items-center">
-                <div class="space-y-6">
-                    <h2 class="text-3xl font-bold">Standardized Project Types</h2>
-                    <p class="text-gray-400 text-lg leading-relaxed">
-                        Say goodbye to manual scaffolding. Hatch comes pre-loaded with best-practice templates for <span
-                            class="text-white">Commercial</span>, <span class="text-white">Narrative</span>, <span
-                            class="text-white">Music Video</span>, and more.
-                        Each template generates a robust, deep directory structure optimized for professional workflows.
-                    </p>
-                    <ul class="space-y-3 text-gray-400">
-                        <li class="flex items-center gap-3"><span
-                                class="w-2 h-2 bg-orange-500 rounded-full"></span>Automatic date-stamped naming</li>
-                        <li class="flex items-center gap-3"><span class="w-2 h-2 bg-orange-500 rounded-full"></span>Deep
-                            nested folder creation</li>
-                        <li class="flex items-center gap-3"><span
-                                class="w-2 h-2 bg-orange-500 rounded-full"></span>Customizable "Hatch" Logic</li>
-                    </ul>
-                </div>
-                <div class="glass p-8 rounded-2xl border border-white/10 bg-gradient-to-br from-[#111] to-[#0a0a0a]">
-                    <div class="space-y-2 font-mono text-sm text-gray-500">
-                        <div class="flex items-center gap-2"><svg class="w-4 h-4 text-orange-500" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-                            </svg> 01_FOOTAGE</div>
-                        <div class="flex items-center gap-2 pl-6"><svg class="w-4 h-4 text-orange-500/60" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-                            </svg> CAM_A</div>
-                        <div class="flex items-center gap-2 pl-6"><svg class="w-4 h-4 text-orange-500/60" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-                            </svg> CAM_B</div>
-                        <div class="flex items-center gap-2"><svg class="w-4 h-4 text-orange-500" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-                            </svg> 02_AUDIO</div>
-                    </div>
-                </div>
+            <div class="section-header">
+                <h2>Production Standardized.</h2>
+                <p>From individual short-form content to feature film pipelines, Hatch automates the complex heavy
+                    lifting of repository setup.</p>
             </div>
 
-            <!-- Feature Block 3: Gist Sync -->
-            <div class="grid md:grid-cols-2 gap-12 items-center">
-                <div class="space-y-6">
-                    <h2 class="text-3xl font-bold">Cloud Gist Synchronization</h2>
-                    <p class="text-gray-400 text-lg leading-relaxed">
-                        Keep your team in sync. Hatch now supports <span class="text-white">GitHub Gist
-                            integration</span> to host your directory templates and project types in the cloud.
-                        Update once in your Gist, and every instance of Hatch will automatically pick up the changes.
-                    </p>
-                    <ul class="space-y-3 text-gray-400">
-                        <li class="flex items-center gap-3"><span
-                                class="w-2 h-2 bg-blue-500 rounded-full"></span>Centralized structure management</li>
-                        <li class="flex items-center gap-3"><span
-                                class="w-2 h-2 bg-blue-500 rounded-full"></span>Automatic startup synchronization</li>
-                        <li class="flex items-center gap-3"><span class="w-2 h-2 bg-blue-500 rounded-full"></span>Robust
-                            offline fallbacks</li>
-                    </ul>
-                </div>
-                <div class="glass p-8 rounded-2xl border border-white/10 bg-gradient-to-br from-[#111] to-[#0a0a0a]">
-                    <div class="flex items-center gap-4 p-4 rounded bg-blue-500/10 border border-blue-500/20">
-                        <div class="p-2 rounded-lg bg-blue-500/20">
-                            <svg class="w-6 h-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
-                            </svg>
-                        </div>
-                        <div>
-                            <div class="text-sm font-semibold text-white">Gist Sync Active</div>
-                            <div class="text-xs text-blue-400/80">Fetching latest TemplateTypes.json...</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Feature Block 2 -->
-            <div class="grid md:grid-cols-2 gap-12 items-center md:flex-row-reverse">
-                <div class="md:order-2 space-y-6">
-                    <h2 class="text-3xl font-bold">Ingest Hub</h2>
-                    <p class="text-gray-400 text-lg leading-relaxed">
-                        Don't lose track of your work. The Ingest Hub acts as a mission control for all your active
-                        projects.
-                        It scans your drives, identifies Hatch-compatible structures, and brings them into a unified
-                        dashboard.
-                    </p>
-                    <ul class="space-y-3 text-gray-400">
-                        <li class="flex items-center gap-3"><span
-                                class="w-2 h-2 bg-amber-500 rounded-full"></span>One-click access to Finder/Explorer
+            <!-- Deep Scaffolding -->
+            <div class="spec-grid" style="margin-bottom: 12rem;">
+                <div class="spec-content">
+                    <h3>Multi-Tiered Scaffolding</h3>
+                    <p>Instead of manual creation, define "Hatch Engines"—deeply nested templates that build your entire
+                        production environment in milliseconds.</p>
+                    <ul class="feature-list">
+                        <li class="feature-points">
+                        <li><i class="fas fa-microchip"></i> <strong>Infinite Nesting:</strong> Create recursive
+                            directory levels for Camera Reels, Audio Mixes, and VFX Comps.</li>
+                        <li><i class="fas fa-toggle-on"></i> <strong>Visual Checklists:</strong> Selectively enable or
+                            disable specific sub-directories for high-volume, repetitive tasks.</li>
+                        <li><i class="fas fa-code"></i> <strong>Naming Tokens:</strong> Dynamic injection of
+                            <code>{client}</code>, <code>{project}</code>, <code>{type}</code>, and <code>{date}</code>
+                            metadata into filenames.
                         </li>
-                        <li class="flex items-center gap-3"><span class="w-2 h-2 bg-amber-500 rounded-full"></span>Live
-                            directory structure preview</li>
-                        <li class="flex items-center gap-3"><span class="w-2 h-2 bg-amber-500 rounded-full"></span>Smart
-                            project validation</li>
                     </ul>
                 </div>
-                <div
-                    class="md:order-1 glass p-8 rounded-2xl border border-white/10 bg-gradient-to-br from-[#111] to-[#0a0a0a]">
-                    <div class="flex flex-col gap-3">
-                        <div class="flex items-center justify-between p-3 rounded bg-white/5 border border-white/5">
-                            <span class="font-medium text-white">Commercial_Nike_01</span>
-                            <span class="text-xs px-2 py-1 rounded bg-green-500/20 text-green-400">Active</span>
+                <div class="visual-display">
+                    <div class="directory-tree">
+                        <div class="tree-root"><i class="fas fa-folder-tree"></i> 2026-01-10_Studio_SummerTVC_Commercial
                         </div>
-                        <div class="flex items-center justify-between p-3 rounded bg-white/5 border border-white/5">
-                            <span class="font-medium text-white">MusicVideo_Drake</span>
-                            <span class="text-xs px-2 py-1 rounded bg-blue-500/20 text-blue-400">Ingested</span>
+                        <div class="tree-item"><span class="tree-folder"><i class="fas fa-folder"></i> 01_FOOTAGE</span>
                         </div>
-                        <div
-                            class="flex items-center justify-between p-3 rounded bg-white/5 border border-white/5 opacity-60">
-                            <span class="font-medium text-white">Doc_Wildlife_24</span>
-                            <span class="text-xs px-2 py-1 rounded bg-gray-500/20 text-gray-400">Archived</span>
+                        <div class="tree-item" style="margin-left: 3rem;"><span class="tree-folder"><i
+                                    class="fas fa-folder"></i> CAM_A</span></div>
+                        <div class="tree-item" style="margin-left: 3rem;"><span class="tree-folder"><i
+                                    class="fas fa-folder"></i> CAM_B</span></div>
+                        <div class="tree-item"><span class="tree-folder"><i class="fas fa-folder"></i> 02_AUDIO</span>
+                        </div>
+                        <div class="tree-item" style="margin-left: 3rem;"><span class="tree-folder"><i
+                                    class="fas fa-file-audio"></i> REC_MIX</span></div>
+                        <div class="tree-item"><span class="tree-folder"><i class="fas fa-folder"></i> 03_VFX</span>
+                        </div>
+                        <div class="tree-item" style="margin-left: 3rem;"><span class="tree-folder"><i
+                                    class="fas fa-folder"></i> PLATES_IN</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ingest Engine -->
+            <div class="spec-grid reverse">
+                <div class="spec-content">
+                    <h3>Verified Ingest Pipeline</h3>
+                    <p>Move camera raw files and sound rolls with absolute certainty. The Ingest Hub monitors source
+                        drives and destination parity.</p>
+                    <ul class="feature-list">
+                        <li class="feature-points">
+                        <li><i class="fas fa-shield-halved"></i> <strong>Bit-Count Verification:</strong> Compares
+                            source and destination file sizes and counts before finalization.</li>
+                        <li><i class="fas fa-bolt"></i> <strong>Dynamic Discovery:</strong> Automatically identifies
+                            "Hatchable" project structures across all connected RAID and SSD storage.</li>
+                        <li><i class="fas fa-folder-open"></i> <strong>Instant Navigation:</strong> Bridge direct
+                            shortcuts to Finder (macOS) or Explorer (Windows) for immediate verification.</li>
+                    </ul>
+                </div>
+                <div class="visual-display" style="background: #050505;">
+                    <div class="ingest-card">
+                        <div class="progress-header"><span>Card_A001_R3D_Ingest</span> <span>74% Complete</span></div>
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                        <div class="verified-list">
+                            <div><i class="fas fa-check" style="color: #22c55e;"></i> A001_C001_0110_V1.R3D — Verified
+                            </div>
+                            <div><i class="fas fa-check" style="color: #22c55e;"></i> A001_C002_0110_V1.R3D — Verified
+                            </div>
+                            <div><i class="fas fa-sync fa-spin" style="color: var(--primary);"></i> Verifying
+                                A001_C003_0110_V1.R3D...</div>
                         </div>
                     </div>
                 </div>
@@ -280,22 +631,126 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="py-16 text-center text-gray-500 text-sm border-t border-white/5 bg-[#050505]">
-        <div class="max-w-4xl mx-auto px-6">
-            <div class="mb-8">
-                <img src="assets/icon.png" alt="Hatch Icon" class="w-12 h-12 rounded-xl mx-auto mb-4 opacity-80">
-                <p class="text-gray-400 italic max-w-md mx-auto">
-                    "The app icon is inspired by the iconic look of <strong>Anaappara Achamma</strong>, played by the
-                    legendary Malayalam actress <strong>Philomina</strong>."
-                </p>
+    <!-- Technical Feature List -->
+    <section class="all-features" id="technical">
+        <div class="container">
+            <div class="section-header">
+                <h2>Technical Manual</h2>
+                <p>Hatch is built for multi-seat facility integration. Maintain a single source of truth across your
+                    entire post-production floor.</p>
             </div>
-            <div class="flex items-center justify-center gap-8 mb-8">
-                <a href="#" class="hover:text-white transition-colors">Documentation</a>
-                <a href="#" class="hover:text-white transition-colors">Privacy</a>
-                <a href="https://github.com/chasinghues/Hatch" class="hover:text-white transition-colors">GitHub</a>
+
+            <div class="feature-list-grid">
+                <div class="feature-box">
+                    <i class="fas fa-cloud-arrow-down"></i>
+                    <h4>GitHub Gist Sync</h4>
+                    <p>Host your production templates on a private or public GitHub Gist. Every edit workstation in your
+                        facility will automatically pull the latest structural schema on startup.</p>
+                </div>
+                <div class="feature-box">
+                    <i class="fas fa-table-list"></i>
+                    <h4>Google Sheets Client Hub</h4>
+                    <p>Stop typing client names manually. Connect a master Google Sheet to Hatch. Any new client added
+                        to the CRM is instantly selectable in the project creation menu.</p>
+                </div>
+                <div class="feature-box">
+                    <i class="fas fa-file-csv"></i>
+                    <h4>Bulk CSV Importing</h4>
+                    <p>Migrate existing client databases or project lists instantly. Drag and drop any <code>.csv</code>
+                        to populate your local client registry without manual data entry.</p>
+                </div>
+                <div class="feature-box">
+                    <i class="fas fa-brain"></i>
+                    <h4>Auto-Learning Registry</h4>
+                    <p>Type a new client or project type once, and Hatch remembers it forever. Your local database grows
+                        with your workflow, making recurring clients instantly accessible without setup.</p>
+                </div>
+                <div class="feature-box">
+                    <i class="fas fa-signature"></i>
+                    <h4>Dynamic Filename Enforcer</h4>
+                    <p>Enforce strict naming conventions for the root project folder. Eliminate "Final_v2_FINAL" chaos
+                        by forcing a structured naming architecture from day one.</p>
+                </div>
+                <div class="feature-box">
+                    <i class="fas fa-hdd"></i>
+                    <h4>Multi-Drive Monitoring</h4>
+                    <p>Monitor multiple high-speed storage volumes. Hatch identifies existing projects and their "Health
+                        Status" based on structural integrity checks.</p>
+                </div>
             </div>
-            <p>© 2026 Chasing Hues. All rights reserved.</p>
+        </div>
+    </section>
+
+    <!-- Universal Downloads -->
+    <section class="download-grid-section" id="downloads">
+        <div class="container">
+            <h2 style="font-size: 3.5rem; letter-spacing: -0.05em;">Get the Production Build.</h2>
+            <p style="color: #64748b; font-size: 1.25rem; margin-top: 1rem;">Available for MacOS, Windows, and Linux. No
+                subscription. No cloud-locking.</p>
+
+            <div class="download-items">
+                <a href="https://github.com/chasinghues/Hatch/releases/download/v1.0.14/Hatch-1.0.14-arm64.dmg"
+                    class="dl-card">
+                    <i class="fab fa-apple"></i>
+                    <span>macOS (Silicon)</span>
+                    <small>Apple Silicon / M1 / M2 / M3</small>
+                </a>
+                <a href="https://github.com/chasinghues/Hatch/releases/download/v1.0.14/Hatch-1.0.14-universal.dmg"
+                    class="dl-card">
+                    <i class="fab fa-apple"></i>
+                    <span>macOS (Intel)</span>
+                    <small>Universal Build (x64 / Intel)</small>
+                </a>
+                <a href="https://github.com/chasinghues/Hatch/releases/download/v1.0.14/Hatch-Setup-1.0.14.exe"
+                    class="dl-card">
+                    <i class="fab fa-windows"></i>
+                    <span>Windows</span>
+                    <small>Windows 10 / 11 (x64 Installer)</small>
+                </a>
+                <a href="https://github.com/chasinghues/Hatch/releases/download/v1.0.14/Hatch-1.0.14-x86_64.AppImage"
+                    class="dl-card">
+                    <i class="fab fa-linux"></i>
+                    <span>Linux</span>
+                    <small>Standard AppImage (Generic x64)</small>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Professional Footer -->
+    <footer>
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4rem;">
+                <div>
+                    <a href="#" class="footer-logo">
+                        <img src="assets/icon.png" alt="Hatch">
+                        <span>Hatch</span>
+                    </a>
+                    <p style="max-width: 400px; line-height: 1.8;">Established to solve the structural chaos of high-end
+                        post-production. An open-source production utility by Chasing Hues.</p>
+                </div>
+                <div style="display: flex; gap: 6rem;">
+                    <div style="display: grid; gap: 1rem;">
+                        <h5
+                            style="color: white; font-weight: 800; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.1em;">
+                            Resources</h5>
+                        <a href="https://github.com/chasinghues/Hatch"
+                            style="color: #475569; text-decoration: none;">GitHub Source</a>
+                        <a href="https://github.com/chasinghues/Hatch/releases"
+                            style="color: #475569; text-decoration: none;">All Releases</a>
+                        <a href="https://github.com/chasinghues/Hatch/issues"
+                            style="color: #475569; text-decoration: none;">Support</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="philomina">
+                "The app icon is inspired by the iconic look of Anaappara Achamma, played by the legendary Malayalam
+                actress Philomina. A tribute to the strong foundations and cinematic legacy of regional excellence."
+            </div>
+
+            <p style="margin-top: 6rem; font-weight: 500; font-size: 0.8rem;">© 2026 Chasing Hues. Built for the
+                creators of tomorrow. MIT Licensed.</p>
         </div>
     </footer>
 
