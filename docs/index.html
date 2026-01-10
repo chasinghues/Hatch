@@ -473,18 +473,95 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             text-decoration: none;
+            font-size: 1.2rem;
+        }
+
+        .footer-logo img {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 4rem;
+            margin-bottom: 6rem;
+        }
+
+        .footer-brand {
+            max-width: 400px;
+        }
+
+        .footer-brand p {
+            line-height: 1.8;
+            color: #64748b;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 6rem;
+        }
+
+        .footer-nav-group h5 {
+            color: white;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-nav-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .footer-nav-group a {
+            color: #475569;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-nav-group a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            margin-top: 6rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+
+        .social-links a {
+            color: #475569;
+            font-size: 1.2rem;
+            transition: color 0.2s;
+        }
+
+        .social-links a:hover {
+            color: white;
         }
 
         .philomina {
             background: #0a0a0a;
-            padding: 2rem;
-            border-radius: 12px;
+            padding: 2.5rem;
+            border-radius: 16px;
             border: 1px solid var(--border);
-            margin-top: 4rem;
-            max-width: 600px;
+            margin: 4rem 0;
+            max-width: 700px;
             font-style: italic;
+            line-height: 1.8;
+            color: #94a3b8;
         }
 
         @media (max-width: 968px) {
@@ -497,12 +574,41 @@
                 direction: ltr;
             }
 
+            .footer-links {
+                gap: 4rem;
+            }
+
             .hero h1 {
                 font-size: 3.5rem;
             }
 
             .section-header h2 {
                 font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .footer-content {
+                flex-direction: column;
+                gap: 3rem;
+            }
+
+            .footer-links {
+                gap: 5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .footer-links {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+                align-items: center;
             }
         }
     </style>
@@ -720,37 +826,43 @@
     <!-- Professional Footer -->
     <footer>
         <div class="container">
-            <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4rem;">
-                <div>
+            <div class="footer-content">
+                <div class="footer-brand">
                     <a href="#" class="footer-logo">
                         <img src="assets/icon.png" alt="Hatch">
                         <span>Hatch</span>
                     </a>
-                    <p style="max-width: 400px; line-height: 1.8;">Established to solve the structural chaos of high-end
-                        post-production. An open-source production utility by Chasing Hues.</p>
+                    <p>Standardizing the structural foundation of high-end post-production. An engineering project by
+                        Chasing Hues.</p>
                 </div>
-                <div style="display: flex; gap: 6rem;">
-                    <div style="display: grid; gap: 1rem;">
-                        <h5
-                            style="color: white; font-weight: 800; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.1em;">
-                            Resources</h5>
-                        <a href="https://github.com/chasinghues/Hatch"
-                            style="color: #475569; text-decoration: none;">GitHub Source</a>
-                        <a href="https://github.com/chasinghues/Hatch/releases"
-                            style="color: #475569; text-decoration: none;">All Releases</a>
-                        <a href="https://github.com/chasinghues/Hatch/issues"
-                            style="color: #475569; text-decoration: none;">Support</a>
+
+                <div class="footer-links">
+                    <div class="footer-nav-group">
+                        <h5>Engineering</h5>
+                        <a href="https://github.com/chasinghues/Hatch">Source Code</a>
+                        <a href="https://github.com/chasinghues/Hatch/releases">Latest Builds</a>
+                        <a href="https://github.com/chasinghues/Hatch/issues">Bug Tracker</a>
+                    </div>
+                    <div class="footer-nav-group">
+                        <h5>Community</h5>
+                        <a href="https://github.com/chasinghues/Hatch/pulls">Contribution</a>
+                        <a href="https://github.com/chasinghues/Hatch/blob/main/LICENSE">MIT License</a>
                     </div>
                 </div>
             </div>
 
             <div class="philomina">
-                "The app icon is inspired by the iconic look of Anaappara Achamma, played by the legendary Malayalam
-                actress Philomina. A tribute to the strong foundations and cinematic legacy of regional excellence."
+                <i class="fas fa-quote-left" style="color: var(--primary); margin-bottom: 1rem; display: block;"></i>
+                The app icon is a tribute to the iconic <strong>Anaappara Achamma</strong>, portrayed by the legendary
+                actress <strong>Philomina</strong>. A celebration of roots, structure, and cinematic legacy.
             </div>
 
-            <p style="margin-top: 6rem; font-weight: 500; font-size: 0.8rem;">© 2026 Chasing Hues. Built for the
-                creators of tomorrow. MIT Licensed.</p>
+            <div class="footer-bottom">
+                <p>© 2026 Chasing Hues. Orchestrating the foundations of film tech.</p>
+                <div class="social-links">
+                    <a href="https://github.com/chasinghues/Hatch"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
         </div>
     </footer>
 
