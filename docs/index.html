@@ -555,13 +555,29 @@
         .philomina {
             background: #0a0a0a;
             padding: 2.5rem;
-            border-radius: 16px;
+            border-radius: 20px;
             border: 1px solid var(--border);
             margin: 4rem 0;
-            max-width: 700px;
+            max-width: 800px;
             font-style: italic;
             line-height: 1.8;
             color: #94a3b8;
+            display: flex;
+            align-items: flex-start;
+            gap: 2rem;
+        }
+
+        .philomina-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            flex-shrink: 0;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .philomina-text {
+            flex: 1;
         }
 
         @media (max-width: 968px) {
@@ -595,6 +611,17 @@
 
             .footer-links {
                 gap: 5rem;
+            }
+
+            .philomina {
+                flex-direction: column;
+                gap: 1.5rem;
+                padding: 2rem;
+            }
+
+            .philomina-icon {
+                width: 60px;
+                height: 60px;
             }
         }
 
@@ -852,9 +879,15 @@
             </div>
 
             <div class="philomina">
-                <i class="fas fa-quote-left" style="color: var(--primary); margin-bottom: 1rem; display: block;"></i>
-                The app icon is a tribute to the iconic <strong>Anaappara Achamma</strong>, portrayed by the legendary
-                actress <strong>Philomina</strong>. A celebration of roots, structure, and cinematic legacy.
+                <img src="assets/icon.png" alt="Hatch App Icon" class="philomina-icon">
+                <div class="philomina-text">
+                    <i class="fas fa-quote-left"
+                        style="color: var(--primary); margin-bottom: 1rem; display: block;"></i>
+                    The app icon is a tribute to the iconic <strong>Anaappara Achamma</strong>, portrayed by the
+                    legendary
+                    actress <strong>Philomina</strong>. A celebration of roots, structural foundation, and cinematic
+                    legacy.
+                </div>
             </div>
 
             <div class="footer-bottom">
