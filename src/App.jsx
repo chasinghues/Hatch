@@ -28,9 +28,11 @@ import { NodeList } from "@/components/DirectoryStructure"
 
 // --- Constants ---
 const PROJECT_TYPES_GIST_URL = "https://gist.githubusercontent.com/chasinghues/02988fe587552bd2ade5fc1fbdbb4cc0/raw/1a2a006a30aa63b1971ecd0adf607cec6ad21eb6/Project%2520Types";
-const TEMPLATES_GIST_URL = "https://gist.githubusercontent.com/chasinghues/8646b4a51a39315dada44b80853367ed/raw/55be34087ac16002e753035b3e18f8cc8dce6638/TemplateTypes.json";
+const TEMPLATES_GIST_URL = "https://gist.githubusercontent.com/chasinghues/8646b4a51a39315dada44b80853367ed/raw/TemplateTypes.json";
 
-const INITIAL_STRUCTURE = defaultTemplates.defaults[0].structure;
+const DEFAULT_TEMPLATE = defaultTemplates.defaults.find(t => t.isDefault) || defaultTemplates.defaults[0];
+const INITIAL_STRUCTURE = DEFAULT_TEMPLATE.structure;
+const INITIAL_TEMPLATE_NAME = DEFAULT_TEMPLATE.name;
 
 function sanitize(str) {
     return str.trim().replace(/[^a-zA-Z0-9\-\s]/g, '');
@@ -174,53 +176,125 @@ function MainApp() {
     const [projectTypesList, setProjectTypesList] = useState(defaultProjectTypes);
     const [isProjectTypeOpen, setIsProjectTypeOpen] = useState(false);
 
-    // Fetch Project Types and Templates from Gist or Store
-    useEffect(() => {
-        // Fetch Project Types
-        if (PROJECT_TYPES_GIST_URL) {
-            fetch(PROJECT_TYPES_GIST_URL)
-                .then(res => res.json())
-                .then(data => {
-                    if (Array.isArray(data)) {
-                        setProjectTypesList(data.sort());
-                        if (window.electronAPI) window.electronAPI.storeSet('projectTypes', data);
-                    }
-                })
-                .catch(err => console.error("Failed to fetch Project Types Gist:", err));
-        } else if (window.electronAPI) {
-            window.electronAPI.storeGet('projectTypes').then(res => {
-                if (res && Array.isArray(res)) setProjectTypesList(res.sort());
-            });
-        }
+    const [selectedTemplateName, setSelectedTemplateName] = useState(INITIAL_TEMPLATE_NAME);
 
-        // Fetch Templates
+    const syncGistData = async (silent = false, baseTemplates = null) => {
+        if (!window.electronAPI) return;
+        if (!silent) toast({ title: "Syncing...", description: "Fetching latest templates from Gist." });
+
         if (TEMPLATES_GIST_URL) {
-            fetch(TEMPLATES_GIST_URL)
-                .then(res => res.json())
-                .then(data => {
-                    if (data && data.defaults) {
-                        const gistTemplates = data.defaults;
-                        if (window.electronAPI) {
-                            window.electronAPI.storeGet('templates').then(savedTemplates => {
-                                const current = (savedTemplates && Array.isArray(savedTemplates)) ? savedTemplates : [];
-                                const merged = [...current];
-                                let hasChanges = false;
-                                gistTemplates.forEach(t => {
-                                    if (!merged.find(m => m.name === t.name)) {
-                                        merged.push(t);
-                                        hasChanges = true;
-                                    }
-                                });
-                                if (hasChanges || current.length === 0) {
-                                    setTemplates(merged);
-                                    window.electronAPI.storeSet('templates', merged);
-                                }
-                            });
+            try {
+                const res = await fetch(`${TEMPLATES_GIST_URL}?t=${Date.now()}`);
+                const data = await res.json();
+                if (data && data.defaults) {
+                    const gistTemplates = data.defaults;
+                    let hasGistChanges = false;
+
+                    // Use provided base or current state
+                    const current = [...(baseTemplates || templates)];
+
+                    gistTemplates.forEach(t => {
+                        const existing = current.find(m => m.name === t.name);
+                        if (!existing) {
+                            current.push(t);
+                            hasGistChanges = true;
+                        } else if (t.isDefault) {
+                            // Enforce cloud default
+                            if (!existing.isDefault) {
+                                current.forEach(m => { if (m.name !== t.name) delete m.isDefault; });
+                                existing.isDefault = true;
+                                hasGistChanges = true;
+                            }
+                            // Always update structure from gist for the default one for debugging
+                            if (JSON.stringify(existing.structure) !== JSON.stringify(t.structure)) {
+                                existing.structure = t.structure;
+                                hasGistChanges = true;
+                            }
                         }
+                    });
+
+                    if (hasGistChanges) {
+                        setTemplates(current);
+                        window.electronAPI.storeSet('templates', current);
+                        const newDefault = current.find(t => t.isDefault);
+                        if (newDefault) {
+                            setStructure(newDefault.structure);
+                            setSelectedTemplateName(newDefault.name);
+                        }
+                        if (!silent) toast({ title: "Cloud Sync Complete", description: "Templates updated from Gist." });
+                    } else {
+                        if (!silent) toast({ title: "Up to Date", description: "Templates already match Cloud Gist." });
                     }
-                })
-                .catch(err => console.error("Failed to fetch Templates Gist:", err));
+                }
+            } catch (err) {
+                console.error("Gist templates fetch failed:", err);
+                if (!silent) toast({ variant: "destructive", title: "Sync Failed", description: "Failed to reload Gist." });
+            }
         }
+    };
+
+    // Unified Data Loading Logic
+    useEffect(() => {
+        const loadInitialData = async () => {
+            if (!window.electronAPI) return;
+
+            // 1. Load Clients & Naming
+            const [savedClients, savedNaming] = await Promise.all([
+                window.electronAPI.storeGet('clients'),
+                window.electronAPI.storeGet('namingStructure')
+            ]);
+            if (savedClients && Array.isArray(savedClients)) setClients(savedClients);
+            if (savedNaming && Array.isArray(savedNaming)) setNamingStructure(savedNaming);
+
+            // 2. Load and Merge Templates
+            const savedTemplates = await window.electronAPI.storeGet('templates');
+            const localDefaults = defaultTemplates.defaults;
+            let currentTemplates = (savedTemplates && Array.isArray(savedTemplates)) ? savedTemplates : [];
+
+            // Merge local defaults into currentTemplates if missing
+            let localMergeChanges = false;
+            localDefaults.forEach(d => {
+                const existing = currentTemplates.find(t => t.name === d.name);
+                if (!existing) {
+                    currentTemplates.push(d);
+                    localMergeChanges = true;
+                } else if (d.isDefault && !existing.isDefault) {
+                    currentTemplates.forEach(m => { if (m.name !== d.name) delete m.isDefault; });
+                    existing.isDefault = true;
+                    localMergeChanges = true;
+                }
+            });
+
+            // Initial selection
+            const localDefaultT = currentTemplates.find(t => t.isDefault) || currentTemplates.find(t => t.name === INITIAL_TEMPLATE_NAME) || currentTemplates[0];
+            if (localDefaultT) {
+                setStructure(localDefaultT.structure);
+                setSelectedTemplateName(localDefaultT.name);
+            }
+            setTemplates(currentTemplates);
+            if (localMergeChanges) window.electronAPI.storeSet('templates', currentTemplates);
+
+            // 3. Load Project Types
+            const savedTypes = await window.electronAPI.storeGet('projectTypes');
+            if (savedTypes && Array.isArray(savedTypes)) setProjectTypesList(savedTypes.sort());
+
+            // 4. Fetch Gist Updates (Asynchronously)
+            syncGistData(true, currentTemplates);
+
+            if (PROJECT_TYPES_GIST_URL) {
+                fetch(PROJECT_TYPES_GIST_URL)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (Array.isArray(data)) {
+                            setProjectTypesList(data.sort());
+                            window.electronAPI.storeSet('projectTypes', data);
+                        }
+                    })
+                    .catch(err => console.error("Gist project types fetch failed:", err));
+            }
+        };
+
+        loadInitialData();
     }, []);
 
     // Ingest specific State
@@ -233,40 +307,6 @@ function MainApp() {
             setIsInitialized(false);
         }
     }, [projectName, clientName, projectType, date]);
-
-    // Load Persistence (Same as before)
-    useEffect(() => {
-        if (window.electronAPI) {
-            window.electronAPI.storeGet('clients').then(res => {
-                if (res && Array.isArray(res)) setClients(res);
-            });
-            window.electronAPI.storeGet('namingStructure').then(res => {
-                if (res && Array.isArray(res)) setNamingStructure(res);
-            });
-            window.electronAPI.storeGet('templates').then(res => {
-                const localDefaults = defaultTemplates.defaults;
-                const saved = (res && Array.isArray(res)) ? res : [];
-
-                // If we don't have a Gist URL, we rely on local templates.json as fallback
-                if (!TEMPLATES_GIST_URL) {
-                    const merged = [...saved];
-                    let hasChanges = false;
-                    localDefaults.forEach(d => {
-                        if (!merged.find(t => t.name === d.name)) {
-                            merged.push(d);
-                            hasChanges = true;
-                        }
-                    });
-                    if (hasChanges || merged.length === 0) {
-                        setTemplates(merged);
-                        window.electronAPI.storeSet('templates', merged);
-                        return;
-                    }
-                }
-                setTemplates(saved);
-            });
-        }
-    }, [TEMPLATES_GIST_URL]);
 
     const saveClients = (newClients) => {
         setClients(newClients);
@@ -411,6 +451,7 @@ function MainApp() {
     const loadTemplate = (t) => {
         if (confirm(`Load template "${t.name}"? This will overwrite current structure.`)) {
             setStructure(t.structure);
+            setSelectedTemplateName(t.name);
             toast({ title: "Template Loaded", description: `Loaded "${t.name}" successfully.` });
         }
     };
@@ -703,9 +744,11 @@ function MainApp() {
                         setStructure={setStructure}
                         handleToggle={handleToggle}
                         templates={templates}
+                        selectedTemplateName={selectedTemplateName}
                         loadTemplate={loadTemplate}
                         saveTemplate={saveTemplate}
                         deleteTemplate={deleteTemplate}
+                        syncGistData={syncGistData}
                         onIngest={isInitialized ? handleIngestRequest : null}
                     />
                 </>
@@ -894,7 +937,7 @@ function IngestView({ initialDestination }) {
     );
 }
 
-function StructureEditor({ structure, setStructure, handleToggle, templates, loadTemplate, saveTemplate, deleteTemplate, onIngest }) {
+function StructureEditor({ structure, setStructure, handleToggle, templates, selectedTemplateName, loadTemplate, saveTemplate, deleteTemplate, syncGistData, onIngest }) {
 
     // Insert a new node at a specific path and index
     const handleInsert = (targetParentId, insertIndex) => {
@@ -998,8 +1041,11 @@ function StructureEditor({ structure, setStructure, handleToggle, templates, loa
 
                             <Popover>
                                 <PopoverTrigger asChild>
-                                    <Button variant="outline" size="sm" className="h-9 px-3 text-xs bg-black/40 border-white/10 hover:bg-white/10 hover:text-white transition-all">
-                                        Load Template
+                                    <Button variant="outline" size="sm" className="h-9 px-3 text-xs bg-black/40 border-primary/20 text-primary hover:bg-primary/10 transition-all font-semibold">
+                                        <div className="flex items-center gap-2">
+                                            <Folder className="w-3 h-3" />
+                                            {selectedTemplateName}
+                                        </div>
                                         <ChevronDown className="ml-2 h-3 w-3 opacity-50" />
                                     </Button>
                                 </PopoverTrigger>
@@ -1007,8 +1053,18 @@ function StructureEditor({ structure, setStructure, handleToggle, templates, loa
                                     {templates && templates.length === 0 && <p className="text-muted-foreground text-center text-xs py-4">No templates</p>}
                                     <div className="max-h-[200px] overflow-y-auto space-y-1">
                                         {templates && templates.map(t => (
-                                            <div key={t.name} className="flex justify-between items-center text-xs p-2 hover:bg-muted rounded group cursor-pointer" onClick={() => loadTemplate(t)}>
-                                                <span className="truncate flex-1 font-medium">{t.name}</span>
+                                            <div
+                                                key={t.name}
+                                                className={cn(
+                                                    "flex justify-between items-center text-xs p-2 hover:bg-muted rounded group cursor-pointer transition-colors",
+                                                    selectedTemplateName === t.name ? "bg-primary/10 text-primary border border-primary/20" : ""
+                                                )}
+                                                onClick={() => loadTemplate(t)}
+                                            >
+                                                <div className="flex items-center gap-2 truncate flex-1">
+                                                    {selectedTemplateName === t.name && <Check className="w-3 h-3" />}
+                                                    <span className="truncate font-medium">{t.name}</span>
+                                                </div>
                                                 <Button variant="ghost" size="icon" className="h-5 w-5 opacity-0 group-hover:opacity-100 text-destructive hover:bg-destructive/10" onClick={(e) => { e.stopPropagation(); deleteTemplate(t.name); }}>
                                                     <X className="w-3 h-3" />
                                                 </Button>
@@ -1017,6 +1073,11 @@ function StructureEditor({ structure, setStructure, handleToggle, templates, loa
                                     </div>
                                 </PopoverContent>
                             </Popover>
+                            {import.meta.env.DEV && (
+                                <Button variant="secondary" size="icon" className="h-9 w-9 bg-primary/20 hover:bg-primary/40 text-primary border border-primary/20" onClick={() => syncGistData()} title="Sync with Cloud Gist">
+                                    <RefreshCw className="w-4 h-4" />
+                                </Button>
+                            )}
                             <Button variant="secondary" size="icon" className="h-9 w-9 bg-primary/20 hover:bg-primary/40 text-primary border border-primary/20" onClick={saveTemplate} title="Save current as template">
                                 <Save className="w-4 h-4" />
                             </Button>

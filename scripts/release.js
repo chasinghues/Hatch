@@ -3,31 +3,27 @@ const path = require('path');
 
 const TOKEN = process.env.GITHUB_TOKEN;
 const REPO = 'chasinghues/Hatch';
-const TAG = 'v1.0.12';
-const RELEASE_NAME = 'Hatch v1.0.12';
-const BODY = `### Release Notes: Hatch v1.0.12
+const TAG = 'v1.0.14';
+const RELEASE_NAME = 'Hatch v1.0.14';
+const BODY = `### Release Notes: Hatch v1.0.14
 
 **Summary**
-This update introduces dynamic configuration capabilities, allowing Hatch to sync project types and directory structures directly from GitHub Gists. This enables seamless updates to standardized workflows across multiple installations without requiring a manual app update.
+This update stabilizes the template synchronization logic and ensures the "Social Media" default is strictly followed across all installations.
 
 **Bug Fixes**
-*   **Template Persistence:** Fixed a bug where default templates were sometimes re-added to the user's list on every launch, causing duplicates.
-*   **First-Run Experience:** Resolved an issue where the initial download of project structures would fail to cache correctly on some systems.
-*   **Sync Logic:** Improved the robustness of the remote-fetch mechanism to handle network timeouts gracefully without blocking the UI.
+*   **Gist Sync Fix:** Updated Template Gist URL to point to the latest raw version, ensuring users always receive the most up-to-date folder structures.
+*   **Initialization Logic:** Refined the logic for picking up default templates from local storage to prevent old defaults from overriding new organizational standards.
+*   **UI Selection:** Fixed an issue where the project structure dropdown would sometimes display the incorrect template name during initial load.
 
-**Feature Additions**
-*   **Dynamic Gist Synchronization:**
-    *   **Remote Templates:** The app now automatically pulls the latest directory structures from your central GitHub Gist (\`TemplateTypes.json\`).
-    *   **Live Project Types:** Project types are now fetched dynamically, ensuring any organizational additions are instantly available to users.
-*   **Standardized Fallbacks:** Implemented a robust "local-first" fallback system that ensures the app remains fully functional using built-in defaults if the user is offline.
-*   **UI Polish:** Minor refinements to the template selection dropdown for better readability of long template names.
+*   **Atomic Defaults:** The app now prioritizes the 'isDefault' flag from the Gist, allowing for instant organization-wide default changes.
 
 **Notes for Mac Installation**
 
 Since Hatch is a specialized productivity tool distributed independently, macOS requires a one-time permission to run the "unidentified" binary:
 
 1.  **The "Right-Click" Method (Recommended):**
-    *   Download \`Hatch-1.0.12-universal.dmg\` and drag the **Hatch** icon to your **Applications** folder.
+    *   Download the appropriate version for your Mac: **Apple Silicon** (M1/M2/M3) or **Universal/Intel**.
+    *   Drag the **Hatch** icon to your **Applications** folder.
     *   **Right-click** (or Control-click) the Hatch app in your Applications folder and select **Open**.
     *   Click **Open** on the security warning dialog. *You will only need to do this once.*
 
@@ -36,7 +32,7 @@ Since Hatch is a specialized productivity tool distributed independently, macOS 
     \`\`\`bash
     xattr -cr /Applications/Hatch.app
     \`\`\`
-4.  You can now open the app normally.`;
+3. You can now open the app normally.`;
 
 async function getOrCreateRelease() {
     console.log(`Checking for release ${TAG}...`);
@@ -136,11 +132,38 @@ async function main() {
         process.exit(1);
     }
 
+    const files = fs.readdirSync(releaseDir);
+
+    // Define required patterns for platforms
+    const requiredPlatforms = {
+        'Mac (Apple Silicon)': `Hatch-${TAG.substring(1)}-arm64.dmg`,
+        'Mac (Universal)': `Hatch-${TAG.substring(1)}-universal.dmg`,
+        'Windows': `Hatch-Setup-${TAG.substring(1)}.exe`,
+        'Linux': `Hatch-${TAG.substring(1)}-x86_64.AppImage`
+    };
+
+    console.log('Validating platform artifacts...');
+    const missing = [];
+    for (const [platform, fileName] of Object.entries(requiredPlatforms)) {
+        if (!files.includes(fileName)) {
+            missing.push(`${platform} (${fileName})`);
+        } else {
+            console.log(`✓ Found ${platform} artifact: ${fileName}`);
+        }
+    }
+
+    if (missing.length > 0) {
+        console.error('\n❌ ERROR: Missing required platform artifacts:');
+        missing.forEach(m => console.error(`   - ${m}`));
+        console.error('\nPlease ensure all builds are completed before running this script.');
+        process.exit(1);
+    }
+
+    console.log('\nAll required platforms found. Proceeding with upload...');
+
     try {
         const release = await getOrCreateRelease();
 
-        // Find all relevant assets
-        const files = fs.readdirSync(releaseDir);
         const assets = files.filter(f => {
             const ext = path.extname(f).toLowerCase();
             return ['.exe', '.dmg', '.zip', '.appimage', '.deb', '.yml'].includes(ext) && !f.endsWith('.blockmap');

@@ -1,7 +1,69 @@
 {
     "defaults": [
         {
-            "name": "Professional (Default)",
+            "name": "Social Media (Short Form)",
+            "isDefault": true,
+            "structure": [
+                {
+                    "id": "01_FOOTAGE",
+                    "name": "01_FOOTAGE",
+                    "checked": true,
+                    "children": []
+                },
+                {
+                    "id": "02_ASSETS",
+                    "name": "02_ASSETS",
+                    "checked": true,
+                    "children": [
+                        {
+                            "id": "02_ASSETS/AUDIO",
+                            "name": "AUDIO",
+                            "checked": true,
+                            "children": []
+                        },
+                        {
+                            "id": "02_ASSETS/GRAPHICS",
+                            "name": "GRAPHICS",
+                            "checked": true,
+                            "children": []
+                        },
+                        {
+                            "id": "02_ASSETS/FONTS",
+                            "name": "FONTS",
+                            "checked": true,
+                            "children": []
+                        }
+                    ]
+                },
+                {
+                    "id": "03_PROJECTS",
+                    "name": "03_PROJECTS",
+                    "checked": true,
+                    "children": []
+                },
+                {
+                    "id": "04_EXPORTS",
+                    "name": "04_EXPORTS",
+                    "checked": true,
+                    "children": [
+                        {
+                            "id": "04_EXPORTS/DRAFTS",
+                            "name": "DRAFTS",
+                            "checked": true,
+                            "children": []
+                        },
+                        {
+                            "id": "04_EXPORTS/FINAL",
+                            "name": "FINAL",
+                            "checked": true,
+                            "children": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Professional",
             "structure": [
                 {
                     "id": "01_FOOTAGE",
@@ -107,67 +169,6 @@
                     "name": "09_DOCUMENTS",
                     "checked": true,
                     "children": []
-                }
-            ]
-        },
-        {
-            "name": "Social Media (Short Form)",
-            "structure": [
-                {
-                    "id": "01_FOOTAGE",
-                    "name": "01_FOOTAGE",
-                    "checked": true,
-                    "children": []
-                },
-                {
-                    "id": "02_ASSETS",
-                    "name": "02_ASSETS",
-                    "checked": true,
-                    "children": [
-                        {
-                            "id": "02_ASSETS/AUDIO",
-                            "name": "AUDIO",
-                            "checked": true,
-                            "children": []
-                        },
-                        {
-                            "id": "02_ASSETS/GRAPHICS",
-                            "name": "GRAPHICS",
-                            "checked": true,
-                            "children": []
-                        },
-                        {
-                            "id": "02_ASSETS/FONTS",
-                            "name": "FONTS",
-                            "checked": true,
-                            "children": []
-                        }
-                    ]
-                },
-                {
-                    "id": "03_PROJECTS",
-                    "name": "03_PROJECTS",
-                    "checked": true,
-                    "children": []
-                },
-                {
-                    "id": "04_EXPORTS",
-                    "name": "04_EXPORTS",
-                    "checked": true,
-                    "children": [
-                        {
-                            "id": "04_EXPORTS/DRAFTS",
-                            "name": "DRAFTS",
-                            "checked": true,
-                            "children": []
-                        },
-                        {
-                            "id": "04_EXPORTS/FINAL",
-                            "name": "FINAL",
-                            "checked": true,
-                            "children": []
-                        }
-                    ]
                 }
             ]
         },
