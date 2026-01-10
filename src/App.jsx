@@ -1041,7 +1041,7 @@ function StructureEditor({ structure, setStructure, handleToggle, templates, sel
 
                             <Popover>
                                 <PopoverTrigger asChild>
-                                    <Button variant="outline" size="sm" className="h-9 px-3 text-xs bg-black/40 border-primary/20 text-primary hover:bg-primary/10 transition-all font-semibold">
+                                    <Button variant="outline" size="sm" className="h-9 px-3 text-xs bg-black/40 border-white/10 text-white hover:bg-white/5 transition-all font-semibold">
                                         <div className="flex items-center gap-2">
                                             <Folder className="w-3 h-3" />
                                             {selectedTemplateName}
@@ -1049,20 +1049,20 @@ function StructureEditor({ structure, setStructure, handleToggle, templates, sel
                                         <ChevronDown className="ml-2 h-3 w-3 opacity-50" />
                                     </Button>
                                 </PopoverTrigger>
-                                <PopoverContent className="w-[250px] p-2" align="end">
+                                <PopoverContent className="w-[250px] p-2 bg-[#121212] border-white/10" align="end">
                                     {templates && templates.length === 0 && <p className="text-muted-foreground text-center text-xs py-4">No templates</p>}
                                     <div className="max-h-[200px] overflow-y-auto space-y-1">
                                         {templates && templates.map(t => (
                                             <div
                                                 key={t.name}
                                                 className={cn(
-                                                    "flex justify-between items-center text-xs p-2 hover:bg-muted rounded group cursor-pointer transition-colors",
-                                                    selectedTemplateName === t.name ? "bg-primary/10 text-primary border border-primary/20" : ""
+                                                    "flex justify-between items-center text-xs p-2 hover:bg-white/5 rounded group cursor-pointer transition-colors",
+                                                    selectedTemplateName === t.name ? "bg-white/10 text-white border border-white/10" : "text-white/60"
                                                 )}
                                                 onClick={() => loadTemplate(t)}
                                             >
                                                 <div className="flex items-center gap-2 truncate flex-1">
-                                                    {selectedTemplateName === t.name && <Check className="w-3 h-3" />}
+                                                    {selectedTemplateName === t.name && <Check className="w-3 h-3 text-white" />}
                                                     <span className="truncate font-medium">{t.name}</span>
                                                 </div>
                                                 <Button variant="ghost" size="icon" className="h-5 w-5 opacity-0 group-hover:opacity-100 text-destructive hover:bg-destructive/10" onClick={(e) => { e.stopPropagation(); deleteTemplate(t.name); }}>
@@ -1074,11 +1074,11 @@ function StructureEditor({ structure, setStructure, handleToggle, templates, sel
                                 </PopoverContent>
                             </Popover>
                             {import.meta.env.DEV && (
-                                <Button variant="secondary" size="icon" className="h-9 w-9 bg-primary/20 hover:bg-primary/40 text-primary border border-primary/20" onClick={() => syncGistData()} title="Sync with Cloud Gist">
+                                <Button variant="secondary" size="icon" className="h-9 w-9 bg-white/5 hover:bg-white/10 text-white border border-white/10" onClick={() => syncGistData()} title="Sync with Cloud Gist">
                                     <RefreshCw className="w-4 h-4" />
                                 </Button>
                             )}
-                            <Button variant="secondary" size="icon" className="h-9 w-9 bg-primary/20 hover:bg-primary/40 text-primary border border-primary/20" onClick={saveTemplate} title="Save current as template">
+                            <Button variant="secondary" size="icon" className="h-9 w-9 bg-white/5 hover:bg-white/10 text-white border border-white/10" onClick={saveTemplate} title="Save current as template">
                                 <Save className="w-4 h-4" />
                             </Button>
                         </div>
