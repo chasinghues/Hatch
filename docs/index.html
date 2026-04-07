@@ -1,78 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hatch — Technical Production Initialization & Media Ingest Engine</title>
-    <meta name="description"
-        content="The definitive open-source utility for high-end post-production. Automate project scaffolding, enforce naming conventions, and perform verified media offloads.">
+    <title>Hatch — Folder Setup for Video Editors</title>
+    <meta name="description" content="Stop building folders by hand. Hatch creates your project structure in seconds and keeps your files organised shoot after shoot.">
 
-    <!-- Fonts: Outfit for Display, Inter for Utility -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap"
-        rel="stylesheet">
-
-    <!-- Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
         :root {
-            --primary: #f97316;
-            --primary-glow: rgba(249, 115, 22, 0.3);
-            --bg: #030303;
-            --surface: #0a0a0a;
-            --surface-accent: #111111;
-            --border: rgba(255, 255, 255, 0.08);
-            --text-main: #ffffff;
-            --text-dim: #94bcbc;
-            /* Desaturated blue-grey for a professional look */
-            --text-muted: #64748b;
-            --radius: 12px;
+            --orange: #f97316;
+            --orange-dim: rgba(249, 115, 22, 0.12);
+            --bg: #0c0c0b;
+            --surface: #141413;
+            --surface-2: #1a1a18;
+            --border: rgba(255,255,255,0.07);
+            --text: #f0ede8;
+            --text-2: #8a8880;
+            --text-3: #4a4845;
+            --radius: 14px;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg);
-            color: var(--text-main);
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
         }
 
-        h1,
-        h2,
-        h3,
-        h4 {
-            font-family: 'Outfit', sans-serif;
-            font-weight: 800;
+        h1, h2, h3, h4 {
+            font-family: 'Syne', sans-serif;
             letter-spacing: -0.02em;
         }
 
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--surface-2);
+            padding: 0.15em 0.45em;
+            border-radius: 5px;
+            font-size: 0.85em;
+            color: var(--orange);
+        }
+
         .container {
-            max-width: 1240px;
+            max-width: 1100px;
             margin: 0 auto;
             padding: 0 2rem;
         }
 
-        /* Navigation */
+        /* ---- NAV ---- */
         nav {
             position: fixed;
             top: 0;
             width: 100%;
-            z-index: 1000;
-            background: rgba(3, 3, 3, 0.85);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
+            z-index: 100;
             padding: 1.25rem 0;
+            background: rgba(12, 12, 11, 0.88);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
         }
 
         nav .container {
@@ -84,19 +76,18 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 0.8rem;
+            gap: 0.7rem;
             text-decoration: none;
-            color: white;
-            font-weight: 900;
-            font-size: 1.4rem;
-            font-family: 'Outfit', sans-serif;
+            color: var(--text);
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 1.25rem;
         }
 
         .logo img {
-            width: 34px;
-            height: 34px;
+            width: 32px;
+            height: 32px;
             border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .nav-links {
@@ -106,799 +97,826 @@
         }
 
         .nav-links a {
-            color: var(--text-muted);
+            color: var(--text-2);
             text-decoration: none;
             font-size: 0.9rem;
-            font-weight: 600;
+            font-weight: 500;
             transition: color 0.2s;
         }
+        .nav-links a:hover { color: var(--text); }
 
-        .nav-links a:hover {
-            color: white;
-        }
-
-        /* Hero */
+        /* ---- HERO ---- */
         .hero {
-            position: relative;
-            padding: 14rem 0 10rem;
+            padding: 14rem 0 9rem;
             text-align: center;
-            background: radial-gradient(circle at 50% 0%, rgba(var(--primary), 0.05) 0%, transparent 70%),
-                url('assets/hero-bg.png') center/cover no-repeat;
-            background-blend-mode: overlay;
+            position: relative;
         }
 
         .hero::before {
             content: '';
             position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, rgba(3, 3, 3, 0.4) 0%, var(--bg) 95%);
+            top: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 700px;
+            height: 500px;
+            background: radial-gradient(ellipse at center top, rgba(249,115,22,0.09) 0%, transparent 70%);
+            pointer-events: none;
         }
 
-        .hero-inner {
-            position: relative;
-            z-index: 10;
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--orange-dim);
+            color: var(--orange);
+            border: 1px solid rgba(249,115,22,0.2);
+            padding: 0.35rem 1rem;
+            border-radius: 100px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            margin-bottom: 2.5rem;
         }
 
         .hero h1 {
-            font-size: clamp(3rem, 10vw, 6rem);
-            line-height: 1;
-            margin-bottom: 2rem;
-            background: linear-gradient(to bottom, #fff 50%, #64748b 100%);
+            font-size: clamp(2.8rem, 8vw, 5.5rem);
+            line-height: 1.02;
+            margin-bottom: 1.75rem;
+            color: var(--text);
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--orange), #fb923c);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .hero p {
-            font-size: 1.35rem;
-            color: #94a3b8;
-            max-width: 750px;
-            margin: 0 auto 3.5rem;
+            font-size: 1.2rem;
+            color: var(--text-2);
+            max-width: 580px;
+            margin: 0 auto 3rem;
             font-weight: 400;
-            line-height: 1.5;
         }
 
-        .hero-downloads {
+        .hero-btns {
             display: flex;
-            gap: 1.5rem;
+            gap: 1rem;
             justify-content: center;
             flex-wrap: wrap;
-            margin-bottom: 4rem;
         }
 
         .btn {
             display: inline-flex;
             align-items: center;
-            gap: 0.8rem;
-            padding: 1.1rem 2.2rem;
+            gap: 0.65rem;
+            padding: 0.9rem 1.9rem;
             border-radius: 100px;
-            font-weight: 700;
+            font-weight: 600;
+            font-size: 0.95rem;
             text-decoration: none;
-            font-size: 1.05rem;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.25s;
+            font-family: 'DM Sans', sans-serif;
         }
 
-        .btn-mac {
-            background: white;
-            color: black;
-            box-shadow: 0 15px 35px rgba(255, 255, 255, 0.15);
+        .btn-primary {
+            background: var(--orange);
+            color: #000;
+            box-shadow: 0 8px 30px rgba(249,115,22,0.25);
+        }
+        .btn-primary:hover {
+            background: #fb923c;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(249,115,22,0.35);
         }
 
-        .btn-mac:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 20px 45px rgba(255, 255, 255, 0.25);
-        }
-
-        .btn-outline {
-            background: rgba(255, 255, 255, 0.05);
-            color: white;
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-2);
             border: 1px solid var(--border);
-            backdrop-filter: blur(10px);
+        }
+        .btn-ghost:hover {
+            color: var(--text);
+            border-color: rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.04);
         }
 
-        .btn-outline:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-3px);
+        .hero-note {
+            margin-top: 1.5rem;
+            font-size: 0.82rem;
+            color: var(--text-3);
         }
 
-        /* Detail Sections */
-        .section-header {
-            text-align: center;
-            margin-bottom: 6rem;
+        /* ---- FOLDER PREVIEW ---- */
+        .folder-preview {
+            padding: 2rem 0 8rem;
         }
 
-        .section-header h2 {
-            font-size: 3.5rem;
-            letter-spacing: -0.04em;
-            margin-bottom: 1.5rem;
-        }
-
-        .section-header p {
-            color: #64748b;
-            font-size: 1.25rem;
-            max-width: 800px;
+        .tree-card {
+            max-width: 680px;
             margin: 0 auto;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.5);
         }
 
-        .spec-container {
+        .tree-topbar {
+            background: var(--surface-2);
+            padding: 0.9rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tree-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+        }
+
+        .tree-body {
+            padding: 1.5rem 2rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            line-height: 2;
+        }
+
+        .tree-root-line {
+            color: var(--text);
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .tree-line {
+            color: var(--text-2);
+            padding-left: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tree-line.nested {
+            padding-left: 2.75rem;
+            color: var(--text-3);
+        }
+
+        .tree-line i { font-size: 0.75rem; }
+        .folder-icon { color: var(--orange); opacity: 0.7; }
+
+        /* ---- HOW IT WORKS ---- */
+        .how {
             padding: 8rem 0;
             border-top: 1px solid var(--border);
         }
 
-        .spec-grid {
+        .section-label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--orange);
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin-bottom: 1.25rem;
+            max-width: 600px;
+        }
+
+        .section-sub {
+            color: var(--text-2);
+            font-size: 1.05rem;
+            max-width: 520px;
+            margin-bottom: 5rem;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .step {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            position: relative;
+            transition: border-color 0.25s;
+        }
+
+        .step:hover { border-color: rgba(249,115,22,0.25); }
+
+        .step-num {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: var(--orange-dim);
+            color: var(--orange);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 0.9rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .step h4 {
+            font-size: 1.15rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .step p {
+            color: var(--text-2);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        /* ---- FEATURES ---- */
+        .features {
+            padding: 8rem 0;
+            background: linear-gradient(to bottom, var(--surface) 0%, var(--bg) 100%);
+            border-top: 1px solid var(--border);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-top: 4rem;
+        }
+
+        .feat {
+            padding: 2rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            display: flex;
+            gap: 1.25rem;
+            align-items: flex-start;
+            transition: 0.25s;
+        }
+
+        .feat:hover {
+            border-color: rgba(249,115,22,0.2);
+            background: var(--surface);
+        }
+
+        .feat-icon {
+            width: 40px; height: 40px;
+            flex-shrink: 0;
+            border-radius: 10px;
+            background: var(--orange-dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--orange);
+            font-size: 1rem;
+        }
+
+        .feat h4 {
+            font-size: 1rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .feat p {
+            color: var(--text-2);
+            font-size: 0.88rem;
+            line-height: 1.6;
+        }
+
+        /* ---- INGEST ---- */
+        .ingest {
+            padding: 8rem 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .ingest-layout {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 6rem;
             align-items: center;
         }
 
-        .spec-grid.reverse {
-            direction: rtl;
-        }
-
-        .spec-grid.reverse .spec-content {
-            direction: ltr;
-        }
-
-        .spec-content h3 {
-            font-size: 2.2rem;
-            margin-bottom: 1.5rem;
-            color: var(--primary);
-        }
-
-        .spec-content p {
-            color: #94a3b8;
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-        }
-
-        .feature-points {
-            list-style: none;
-            display: grid;
-            gap: 1rem;
-        }
-
-        .feature-points li {
-            display: flex;
-            gap: 1rem;
-            color: #e2e8f0;
-            font-weight: 500;
-        }
-
-        .feature-points i {
-            color: var(--primary);
-            margin-top: 0.3rem;
-            font-size: 1.1rem;
-        }
-
-        /* Visual Blocks */
-        .visual-display {
+        .ingest-visual {
             background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 2rem;
-            box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.6);
-            overflow: hidden;
-            position: relative;
         }
 
-        .directory-tree {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            color: #a1a1aa;
+        .transfer-item {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 0.75rem;
         }
 
-        .tree-root {
-            color: white;
-            font-weight: 600;
-            margin-bottom: 1rem;
+        .transfer-header {
             display: flex;
-            align-items: center;
-            gap: 0.6rem;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-2);
+            margin-bottom: 0.6rem;
+            font-family: 'JetBrains Mono', monospace;
         }
 
-        .tree-item {
-            margin-left: 1.5rem;
-            padding: 0.4rem 0;
-            border-left: 1px solid #262626;
-            padding-left: 1rem;
-            position: relative;
+        .pbar {
+            height: 4px;
+            background: var(--surface-2);
+            border-radius: 10px;
+            overflow: hidden;
         }
 
-        .tree-item::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 1rem;
-            width: 0.5rem;
-            height: 1px;
-            background: #262626;
+        .pfill {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(to right, var(--orange), #fb923c);
         }
 
-        .tree-folder {
-            color: #d1d5db;
+        .transfer-done {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-3);
+            padding-top: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .transfer-done span {
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
 
-        .tree-folder i {
-            color: var(--primary);
-            opacity: 0.8;
-        }
+        .check { color: #4ade80; }
+        .spin { color: var(--orange); animation: spin 1.5s linear infinite; display: inline-block; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Ingest Hub Visualization */
-        .ingest-card {
-            background: #000;
-            border: 1px solid #262626;
-            border-radius: 12px;
-            padding: 1.5rem;
-        }
+        .ingest-text .section-title { max-width: 100%; }
 
-        .progress-header {
+        .ingest-points {
+            list-style: none;
+            margin-top: 2rem;
             display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            margin-bottom: 0.75rem;
-            color: #94a3b8;
+            flex-direction: column;
+            gap: 1rem;
         }
 
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: #1a1a1a;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
-            overflow: hidden;
+        .ingest-points li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            color: var(--text-2);
+            font-size: 0.92rem;
         }
 
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(to right, var(--primary), #ef4444);
-            border-radius: 10px;
-            width: 68%;
+        .ingest-points i {
+            color: var(--orange);
+            margin-top: 0.2rem;
+            font-size: 0.9rem;
+            flex-shrink: 0;
         }
 
-        .verified-list {
-            font-size: 0.75rem;
-            color: #475569;
-            display: grid;
-            gap: 0.4rem;
-        }
-
-        /* Detailed Feature List */
-        .all-features {
+        /* ---- DOWNLOADS ---- */
+        .downloads {
             padding: 8rem 0;
-            background: rgba(255, 255, 255, 0.02);
-        }
-
-        .feature-list-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2.5rem;
-        }
-
-        .feature-box {
-            padding: 2.5rem;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            transition: 0.3s;
-        }
-
-        .feature-box:hover {
-            border-color: rgba(var(--primary), 0.3);
-            background: var(--surface-accent);
-            transform: translateY(-5px);
-        }
-
-        .feature-box i {
-            font-size: 1.8rem;
-            color: var(--primary);
-            margin-bottom: 1.5rem;
-        }
-
-        .feature-box h4 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
-        }
-
-        .feature-box p {
-            color: #64748b;
-            font-size: 0.95rem;
-            line-height: 1.7;
-        }
-
-        /* Full Platform Grid */
-        .download-grid-section {
-            padding: 10rem 0;
+            border-top: 1px solid var(--border);
             text-align: center;
         }
 
-        .download-items {
+        .dl-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 2rem;
-            margin-top: 4rem;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-top: 3.5rem;
         }
 
         .dl-card {
-            background: #0a0a0a;
+            background: var(--surface);
             border: 1px solid var(--border);
-            padding: 3rem 2rem;
-            border-radius: 24px;
-            transition: 0.3s;
+            border-radius: var(--radius);
+            padding: 2rem 1.25rem;
             text-decoration: none;
-            color: white;
+            color: var(--text);
+            transition: 0.25s;
         }
 
         .dl-card:hover {
-            border-color: white;
-            background: #111;
-            transform: scale(1.02);
+            border-color: rgba(255,255,255,0.15);
+            background: var(--surface-2);
+            transform: translateY(-3px);
         }
 
         .dl-card i {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
+            font-size: 2rem;
             display: block;
+            margin-bottom: 1rem;
+            color: var(--text-2);
         }
 
-        .dl-card span {
+        .dl-card strong {
             display: block;
-            font-weight: 800;
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
+            font-family: 'Syne', sans-serif;
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
         }
 
         .dl-card small {
-            color: #64748b;
+            color: var(--text-3);
+            font-size: 0.8rem;
+        }
+
+        .dl-note {
+            margin-top: 2rem;
             font-size: 0.85rem;
-            font-weight: 600;
+            color: var(--text-3);
         }
 
-        /* Footer */
+        /* ---- FOOTER ---- */
         footer {
-            padding: 8rem 0;
+            padding: 4rem 0;
             border-top: 1px solid var(--border);
-            color: #475569;
-            font-size: 0.9rem;
         }
 
-        .footer-logo {
-            font-family: 'Outfit', sans-serif;
-            font-weight: 900;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-            text-decoration: none;
-            font-size: 1.2rem;
-        }
-
-        .footer-logo img {
-            width: 28px;
-            height: 28px;
-            border-radius: 6px;
-        }
-
-        .footer-content {
+        .footer-inner {
             display: flex;
             justify-content: space-between;
+            align-items: flex-start;
             flex-wrap: wrap;
-            gap: 4rem;
-            margin-bottom: 6rem;
+            gap: 3rem;
         }
 
         .footer-brand {
-            max-width: 400px;
+            max-width: 340px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            text-decoration: none;
+            color: var(--text);
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 1.15rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-logo img {
+            width: 28px; height: 28px;
+            border-radius: 6px;
         }
 
         .footer-brand p {
-            line-height: 1.8;
-            color: #64748b;
+            color: var(--text-3);
+            font-size: 0.88rem;
+            line-height: 1.7;
         }
 
-        .footer-links {
+        .footer-nav {
             display: flex;
-            gap: 6rem;
+            gap: 4rem;
         }
 
-        .footer-nav-group h5 {
-            color: white;
-            font-weight: 800;
+        .footer-col h5 {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.78rem;
             text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 0.1em;
-            margin-bottom: 1.5rem;
+            letter-spacing: 0.08em;
+            color: var(--text-2);
+            margin-bottom: 1rem;
         }
 
-        .footer-nav-group {
+        .footer-col {
             display: flex;
             flex-direction: column;
-            gap: 0.8rem;
+            gap: 0.65rem;
         }
 
-        .footer-nav-group a {
-            color: #475569;
+        .footer-col a {
+            color: var(--text-3);
             text-decoration: none;
+            font-size: 0.88rem;
             transition: color 0.2s;
         }
 
-        .footer-nav-group a:hover {
-            color: white;
-        }
+        .footer-col a:hover { color: var(--text); }
 
         .footer-bottom {
-            margin-top: 6rem;
-            padding-top: 2rem;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
             border-top: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-weight: 500;
             font-size: 0.8rem;
+            color: var(--text-3);
         }
 
-        .social-links a {
-            color: #475569;
-            font-size: 1.2rem;
-            transition: color 0.2s;
+        .footer-bottom a {
+            color: var(--text-3);
+            text-decoration: none;
         }
 
-        .social-links a:hover {
-            color: white;
-        }
-
-        .philomina {
-            background: #0a0a0a;
-            padding: 2.5rem;
-            border-radius: 20px;
+        /* ---- PHILOMINA ---- */
+        .tribute {
+            margin-top: 3rem;
+            padding: 1.5rem 2rem;
+            background: var(--surface);
             border: 1px solid var(--border);
-            margin: 4rem 0;
-            max-width: 800px;
-            font-style: italic;
-            line-height: 1.8;
-            color: #94a3b8;
+            border-radius: var(--radius);
             display: flex;
-            align-items: flex-start;
-            gap: 2rem;
+            align-items: center;
+            gap: 1.5rem;
         }
 
-        .philomina-icon {
-            width: 80px;
-            height: 80px;
-            border-radius: 16px;
-            border: 1px solid var(--border);
+        .tribute img {
+            width: 52px; height: 52px;
+            border-radius: 10px;
             flex-shrink: 0;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
         }
 
-        .philomina-text {
-            flex: 1;
+        .tribute p {
+            font-size: 0.82rem;
+            color: var(--text-3);
+            line-height: 1.7;
+            font-style: italic;
         }
 
-        @media (max-width: 968px) {
-            .spec-grid {
-                grid-template-columns: 1fr;
-                gap: 4rem;
-            }
+        .tribute strong { color: var(--text-2); font-style: normal; }
 
-            .spec-grid.reverse {
-                direction: ltr;
-            }
-
-            .footer-links {
-                gap: 4rem;
-            }
-
-            .hero h1 {
-                font-size: 3.5rem;
-            }
-
-            .section-header h2 {
-                font-size: 2.5rem;
-            }
+        /* ---- RESPONSIVE ---- */
+        @media (max-width: 900px) {
+            .steps { grid-template-columns: 1fr; }
+            .features-grid { grid-template-columns: 1fr; }
+            .ingest-layout { grid-template-columns: 1fr; gap: 3rem; }
+            .dl-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-inner { flex-direction: column; }
+            .footer-nav { gap: 3rem; }
         }
 
-        @media (max-width: 768px) {
-            .footer-content {
-                flex-direction: column;
-                gap: 3rem;
-            }
-
-            .footer-links {
-                gap: 5rem;
-            }
-
-            .philomina {
-                flex-direction: column;
-                gap: 1.5rem;
-                padding: 2rem;
-            }
-
-            .philomina-icon {
-                width: 60px;
-                height: 60px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .footer-links {
-                flex-direction: column;
-                gap: 2rem;
-            }
-
-            .footer-bottom {
-                flex-direction: column;
-                gap: 1.5rem;
-                text-align: center;
-                align-items: center;
-            }
+        @media (max-width: 540px) {
+            .dl-grid { grid-template-columns: 1fr 1fr; }
+            .footer-nav { flex-direction: column; gap: 2rem; }
+            .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
+            .tribute { flex-direction: column; text-align: center; }
         }
     </style>
 </head>
-
 <body>
 
-    <nav>
-        <div class="container">
-            <a href="#" class="logo">
-                <img src="assets/icon.png" alt="Hatch App Icon">
-                <span>Hatch</span>
+<nav>
+    <div class="container">
+        <a href="#" class="logo">
+            <img src="assets/icon.png" alt="Hatch">
+            Hatch
+        </a>
+        <div class="nav-links">
+            <a href="#how">How it works</a>
+            <a href="#features">Features</a>
+            <a href="#downloads">Download</a>
+            <a href="https://github.com/chasinghues/Hatch" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+        </div>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-tag"><i class="fas fa-folder-tree"></i> Free &amp; Open Source</div>
+        <h1>Your project folders,<br><span>set up in seconds.</span></h1>
+        <p>Stop building the same folder structure by hand every shoot. Hatch creates it all at once — named right, organised from the start.</p>
+        <div class="hero-btns">
+            <a href="https://github.com/chasinghues/Hatch/releases/download/v1.0.14/Hatch-1.0.14-arm64.dmg" class="btn btn-primary">
+                <i class="fab fa-apple"></i> Download for Mac
             </a>
-            <div class="nav-links">
-                <a href="#workflow">Workflow</a>
-                <a href="#technical">Technical Manual</a>
-                <a href="#downloads">Downloads</a>
-                <a href="https://github.com/chasinghues/Hatch" target="_blank"><i class="fab fa-github"></i> Source</a>
+            <a href="https://github.com/chasinghues/Hatch/releases/download/v1.0.14/Hatch-Setup-1.0.14.exe" class="btn btn-ghost">
+                <i class="fab fa-windows"></i> Download for Windows
+            </a>
+        </div>
+        <p class="hero-note">Free forever. No account, no subscription.</p>
+    </div>
+</section>
+
+<!-- FOLDER PREVIEW -->
+<div class="folder-preview">
+    <div class="container">
+        <div class="tree-card">
+            <div class="tree-topbar">
+                <div class="tree-dot" style="background:#ff5f57;"></div>
+                <div class="tree-dot" style="background:#febc2e;"></div>
+                <div class="tree-dot" style="background:#28c840;"></div>
+            </div>
+            <div class="tree-body">
+                <div class="tree-root-line"><i class="fas fa-folder-tree" style="color:var(--orange); margin-right:0.6rem;"></i>2026-01-10_NikeAsia_SummerCampaign_TVC</div>
+                <div class="tree-line"><i class="fas fa-caret-right"></i><i class="fas fa-folder folder-icon"></i> 01_FOOTAGE</div>
+                <div class="tree-line nested"><i class="fas fa-folder folder-icon"></i> CAM_A</div>
+                <div class="tree-line nested"><i class="fas fa-folder folder-icon"></i> CAM_B</div>
+                <div class="tree-line"><i class="fas fa-caret-right"></i><i class="fas fa-folder folder-icon"></i> 02_AUDIO</div>
+                <div class="tree-line nested"><i class="fas fa-folder folder-icon"></i> PRODUCTION_SOUND</div>
+                <div class="tree-line nested"><i class="fas fa-folder folder-icon"></i> MUSIC</div>
+                <div class="tree-line"><i class="fas fa-caret-right"></i><i class="fas fa-folder folder-icon"></i> 03_EDIT</div>
+                <div class="tree-line nested"><i class="fas fa-folder folder-icon"></i> PROJECT_FILES</div>
+                <div class="tree-line nested"><i class="fas fa-folder folder-icon"></i> EXPORTS</div>
+                <div class="tree-line"><i class="fas fa-caret-right"></i><i class="fas fa-folder folder-icon"></i> 04_GRAPHICS</div>
+                <div class="tree-line"><i class="fas fa-caret-right"></i><i class="fas fa-folder folder-icon"></i> 05_DELIVERY</div>
             </div>
         </div>
-    </nav>
+    </div>
+</div>
 
-    <section class="hero">
-        <div class="container hero-inner">
-            <h1>Industrial Post <br> Orchestration.</h1>
-            <p>Hatch is the technical backbone for film production folder architectures and media management. Designed
-                for DITs, post-supervisors, and editorial teams who demand structural parity.</p>
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+    <div class="container">
+        <p class="section-label">How it works</p>
+        <h2 class="section-title">Three steps, then you're done.</h2>
+        <p class="section-sub">Pick a template, fill in the project details, and Hatch builds your entire folder structure — correctly named and ready to use.</p>
 
-            <div class="hero-downloads">
-                <a href="https://github.com/chasinghues/Hatch/releases/download/v1.0.14/Hatch-1.0.14-arm64.dmg"
-                    class="btn btn-mac">
-                    <i class="fab fa-apple"></i> Download for Mac (Apple Silicon)
-                </a>
-                <a href="https://github.com/chasinghues/Hatch/releases/download/v1.0.14/Hatch-Setup-1.0.14.exe"
-                    class="btn btn-outline">
-                    <i class="fab fa-windows"></i> Download for Windows
-                </a>
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <h4>Pick your template</h4>
+                <p>Choose from templates you've built for your type of work — commercial, short film, social content, whatever fits your workflow.</p>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <h4>Enter the project info</h4>
+                <p>Type in the client name, project name, and shoot date. Hatch fills these into the folder and file names automatically.</p>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <h4>Hit create</h4>
+                <p>Your entire folder structure is built in milliseconds — exactly the same every time, no typing, no forgetting, no mess.</p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Detailed Functional Specs -->
-    <section class="spec-container" id="workflow">
-        <div class="container">
+<!-- FEATURES -->
+<section class="features" id="features">
+    <div class="container">
+        <p class="section-label">Features</p>
+        <h2 class="section-title">Built around how editors actually work.</h2>
 
-            <div class="section-header">
-                <h2>Production Standardized.</h2>
-                <p>From individual short-form content to feature film pipelines, Hatch automates the complex heavy
-                    lifting of repository setup.</p>
-            </div>
-
-            <!-- Deep Scaffolding -->
-            <div class="spec-grid" style="margin-bottom: 12rem;">
-                <div class="spec-content">
-                    <h3>Multi-Tiered Scaffolding</h3>
-                    <p>Instead of manual creation, define "Hatch Engines"—deeply nested templates that build your entire
-                        production environment in milliseconds.</p>
-                    <ul class="feature-list">
-                        <li class="feature-points">
-                        <li><i class="fas fa-microchip"></i> <strong>Infinite Nesting:</strong> Create recursive
-                            directory levels for Camera Reels, Audio Mixes, and VFX Comps.</li>
-                        <li><i class="fas fa-toggle-on"></i> <strong>Visual Checklists:</strong> Selectively enable or
-                            disable specific sub-directories for high-volume, repetitive tasks.</li>
-                        <li><i class="fas fa-code"></i> <strong>Naming Tokens:</strong> Dynamic injection of
-                            <code>{client}</code>, <code>{project}</code>, <code>{type}</code>, and <code>{date}</code>
-                            metadata into filenames.
-                        </li>
-                    </ul>
+        <div class="features-grid">
+            <div class="feat">
+                <div class="feat-icon"><i class="fas fa-layer-group"></i></div>
+                <div>
+                    <h4>Build your own templates</h4>
+                    <p>Set up your ideal folder structure once and save it. Hatch uses it every project — sub-folders, naming, all of it.</p>
                 </div>
-                <div class="visual-display">
-                    <div class="directory-tree">
-                        <div class="tree-root"><i class="fas fa-folder-tree"></i> 2026-01-10_Studio_SummerTVC_Commercial
-                        </div>
-                        <div class="tree-item"><span class="tree-folder"><i class="fas fa-folder"></i> 01_FOOTAGE</span>
-                        </div>
-                        <div class="tree-item" style="margin-left: 3rem;"><span class="tree-folder"><i
-                                    class="fas fa-folder"></i> CAM_A</span></div>
-                        <div class="tree-item" style="margin-left: 3rem;"><span class="tree-folder"><i
-                                    class="fas fa-folder"></i> CAM_B</span></div>
-                        <div class="tree-item"><span class="tree-folder"><i class="fas fa-folder"></i> 02_AUDIO</span>
-                        </div>
-                        <div class="tree-item" style="margin-left: 3rem;"><span class="tree-folder"><i
-                                    class="fas fa-file-audio"></i> REC_MIX</span></div>
-                        <div class="tree-item"><span class="tree-folder"><i class="fas fa-folder"></i> 03_VFX</span>
-                        </div>
-                        <div class="tree-item" style="margin-left: 3rem;"><span class="tree-folder"><i
-                                    class="fas fa-folder"></i> PLATES_IN</span></div>
+            </div>
+            <div class="feat">
+                <div class="feat-icon"><i class="fas fa-signature"></i></div>
+                <div>
+                    <h4>Consistent naming, every time</h4>
+                    <p>Folders and root names auto-fill with <code>{client}</code>, <code>{project}</code>, and <code>{date}</code> — no more "Final_v2_FINAL" chaos.</p>
+                </div>
+            </div>
+            <div class="feat">
+                <div class="feat-icon"><i class="fas fa-address-book"></i></div>
+                <div>
+                    <h4>Client list built in</h4>
+                    <p>Hatch remembers your clients. Type a name once and it's saved. You can also sync with a Google Sheet or import a CSV.</p>
+                </div>
+            </div>
+            <div class="feat">
+                <div class="feat-icon"><i class="fas fa-toggle-on"></i></div>
+                <div>
+                    <h4>Toggle folders on or off</h4>
+                    <p>Not every project needs every folder. Quickly enable or disable parts of your template before you create.</p>
+                </div>
+            </div>
+            <div class="feat">
+                <div class="feat-icon"><i class="fas fa-cloud-arrow-down"></i></div>
+                <div>
+                    <h4>Share templates across machines</h4>
+                    <p>Host your template on a private GitHub Gist. Any machine running Hatch picks it up automatically on startup.</p>
+                </div>
+            </div>
+            <div class="feat">
+                <div class="feat-icon"><i class="fas fa-hdd"></i></div>
+                <div>
+                    <h4>See all your projects at a glance</h4>
+                    <p>Connect a drive and Hatch shows every project on it — with a health check to flag anything that looks incomplete.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- INGEST -->
+<section class="ingest">
+    <div class="container">
+        <div class="ingest-layout">
+            <div class="ingest-visual">
+                <div class="transfer-item">
+                    <div class="transfer-header">
+                        <span>Card_A001 → SSD_Projects</span>
+                        <span>74%</span>
                     </div>
+                    <div class="pbar"><div class="pfill" style="width:74%"></div></div>
+                </div>
+                <div class="transfer-done">
+                    <span><i class="fas fa-check check"></i> A001_C001_0110.R3D — OK</span>
+                    <span><i class="fas fa-check check"></i> A001_C002_0110.R3D — OK</span>
+                    <span><i class="fas fa-sync spin"></i> A001_C003_0110.R3D — copying…</span>
                 </div>
             </div>
 
-            <!-- Ingest Engine -->
-            <div class="spec-grid reverse">
-                <div class="spec-content">
-                    <h3>Verified Ingest Pipeline</h3>
-                    <p>Move camera raw files and sound rolls with absolute certainty. The Ingest Hub monitors source
-                        drives and destination parity.</p>
-                    <ul class="feature-list">
-                        <li class="feature-points">
-                        <li><i class="fas fa-shield-halved"></i> <strong>Bit-Count Verification:</strong> Compares
-                            source and destination file sizes and counts before finalization.</li>
-                        <li><i class="fas fa-bolt"></i> <strong>Dynamic Discovery:</strong> Automatically identifies
-                            "Hatchable" project structures across all connected RAID and SSD storage.</li>
-                        <li><i class="fas fa-folder-open"></i> <strong>Instant Navigation:</strong> Bridge direct
-                            shortcuts to Finder (macOS) or Explorer (Windows) for immediate verification.</li>
-                    </ul>
-                </div>
-                <div class="visual-display" style="background: #050505;">
-                    <div class="ingest-card">
-                        <div class="progress-header"><span>Card_A001_R3D_Ingest</span> <span>74% Complete</span></div>
-                        <div class="progress-bar">
-                            <div class="progress-fill"></div>
-                        </div>
-                        <div class="verified-list">
-                            <div><i class="fas fa-check" style="color: #22c55e;"></i> A001_C001_0110_V1.R3D — Verified
-                            </div>
-                            <div><i class="fas fa-check" style="color: #22c55e;"></i> A001_C002_0110_V1.R3D — Verified
-                            </div>
-                            <div><i class="fas fa-sync fa-spin" style="color: var(--primary);"></i> Verifying
-                                A001_C003_0110_V1.R3D...</div>
-                        </div>
-                    </div>
-                </div>
+            <div class="ingest-text">
+                <p class="section-label">Media Ingest</p>
+                <h2 class="section-title">Copy cards with confidence.</h2>
+                <p style="color:var(--text-2); font-size:0.95rem; margin-top:1rem;">The Ingest Hub moves footage from your cards to your project folder and checks that every file transferred cleanly. No silent failures, no missing files.</p>
+                <ul class="ingest-points">
+                    <li><i class="fas fa-shield-halved"></i> Checks file count and size before calling it done</li>
+                    <li><i class="fas fa-bolt"></i> Detects your connected drives and project folders automatically</li>
+                    <li><i class="fas fa-folder-open"></i> One click to open any folder in Finder or Explorer</li>
+                </ul>
             </div>
-
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Technical Feature List -->
-    <section class="all-features" id="technical">
-        <div class="container">
-            <div class="section-header">
-                <h2>Technical Manual</h2>
-                <p>Hatch is built for multi-seat facility integration. Maintain a single source of truth across your
-                    entire post-production floor.</p>
+<!-- DOWNLOADS -->
+<section class="downloads" id="downloads">
+    <div class="container">
+        <p class="section-label">Download</p>
+        <h2 class="section-title" style="font-size: clamp(2rem, 5vw, 3rem); margin: 0 auto 0.75rem;">Available on Mac, Windows, and Linux.</h2>
+        <p style="color:var(--text-2); font-size:1rem;">Free. No account needed. No subscription, ever.</p>
+
+        <div class="dl-grid">
+            <a href="https://github.com/chasinghues/Hatch/releases/download/v1.0.14/Hatch-1.0.14-arm64.dmg" class="dl-card">
+                <i class="fab fa-apple"></i>
+                <strong>macOS Silicon</strong>
+                <small>M1 / M2 / M3</small>
+            </a>
+            <a href="https://github.com/chasinghues/Hatch/releases/download/v1.0.14/Hatch-1.0.14-universal.dmg" class="dl-card">
+                <i class="fab fa-apple"></i>
+                <strong>macOS Intel</strong>
+                <small>x64 Universal</small>
+            </a>
+            <a href="https://github.com/chasinghues/Hatch/releases/download/v1.0.14/Hatch-Setup-1.0.14.exe" class="dl-card">
+                <i class="fab fa-windows"></i>
+                <strong>Windows</strong>
+                <small>Windows 10 / 11</small>
+            </a>
+            <a href="https://github.com/chasinghues/Hatch/releases/download/v1.0.14/Hatch-1.0.14-x86_64.AppImage" class="dl-card">
+                <i class="fab fa-linux"></i>
+                <strong>Linux</strong>
+                <small>AppImage x64</small>
+            </a>
+        </div>
+        <p class="dl-note">Open source under the MIT License. <a href="https://github.com/chasinghues/Hatch" style="color:var(--text-2); text-decoration:underline;">View on GitHub →</a></p>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <a href="#" class="footer-logo">
+                    <img src="assets/icon.png" alt="Hatch">
+                    Hatch
+                </a>
+                <p>A folder management tool for freelance video editors and filmmakers. Built by Chasing Hues.</p>
             </div>
 
-            <div class="feature-list-grid">
-                <div class="feature-box">
-                    <i class="fas fa-cloud-arrow-down"></i>
-                    <h4>GitHub Gist Sync</h4>
-                    <p>Host your production templates on a private or public GitHub Gist. Every edit workstation in your
-                        facility will automatically pull the latest structural schema on startup.</p>
+            <div class="footer-nav">
+                <div class="footer-col">
+                    <h5>Project</h5>
+                    <a href="https://github.com/chasinghues/Hatch">Source Code</a>
+                    <a href="https://github.com/chasinghues/Hatch/releases">Releases</a>
+                    <a href="https://github.com/chasinghues/Hatch/issues">Report a Bug</a>
                 </div>
-                <div class="feature-box">
-                    <i class="fas fa-table-list"></i>
-                    <h4>Google Sheets Client Hub</h4>
-                    <p>Stop typing client names manually. Connect a master Google Sheet to Hatch. Any new client added
-                        to the CRM is instantly selectable in the project creation menu.</p>
-                </div>
-                <div class="feature-box">
-                    <i class="fas fa-file-csv"></i>
-                    <h4>Bulk CSV Importing</h4>
-                    <p>Migrate existing client databases or project lists instantly. Drag and drop any <code>.csv</code>
-                        to populate your local client registry without manual data entry.</p>
-                </div>
-                <div class="feature-box">
-                    <i class="fas fa-brain"></i>
-                    <h4>Auto-Learning Registry</h4>
-                    <p>Type a new client or project type once, and Hatch remembers it forever. Your local database grows
-                        with your workflow, making recurring clients instantly accessible without setup.</p>
-                </div>
-                <div class="feature-box">
-                    <i class="fas fa-signature"></i>
-                    <h4>Dynamic Filename Enforcer</h4>
-                    <p>Enforce strict naming conventions for the root project folder. Eliminate "Final_v2_FINAL" chaos
-                        by forcing a structured naming architecture from day one.</p>
-                </div>
-                <div class="feature-box">
-                    <i class="fas fa-hdd"></i>
-                    <h4>Multi-Drive Monitoring</h4>
-                    <p>Monitor multiple high-speed storage volumes. Hatch identifies existing projects and their "Health
-                        Status" based on structural integrity checks.</p>
+                <div class="footer-col">
+                    <h5>Open Source</h5>
+                    <a href="https://github.com/chasinghues/Hatch/pulls">Contribute</a>
+                    <a href="https://github.com/chasinghues/Hatch/blob/main/LICENSE">MIT License</a>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- Universal Downloads -->
-    <section class="download-grid-section" id="downloads">
-        <div class="container">
-            <h2 style="font-size: 3.5rem; letter-spacing: -0.05em;">Get the Production Build.</h2>
-            <p style="color: #64748b; font-size: 1.25rem; margin-top: 1rem;">Available for MacOS, Windows, and Linux. No
-                subscription. No cloud-locking.</p>
-
-            <div class="download-items">
-                <a href="https://github.com/chasinghues/Hatch/releases/download/v1.0.14/Hatch-1.0.14-arm64.dmg"
-                    class="dl-card">
-                    <i class="fab fa-apple"></i>
-                    <span>macOS (Silicon)</span>
-                    <small>Apple Silicon / M1 / M2 / M3</small>
-                </a>
-                <a href="https://github.com/chasinghues/Hatch/releases/download/v1.0.14/Hatch-1.0.14-universal.dmg"
-                    class="dl-card">
-                    <i class="fab fa-apple"></i>
-                    <span>macOS (Intel)</span>
-                    <small>Universal Build (x64 / Intel)</small>
-                </a>
-                <a href="https://github.com/chasinghues/Hatch/releases/download/v1.0.14/Hatch-Setup-1.0.14.exe"
-                    class="dl-card">
-                    <i class="fab fa-windows"></i>
-                    <span>Windows</span>
-                    <small>Windows 10 / 11 (x64 Installer)</small>
-                </a>
-                <a href="https://github.com/chasinghues/Hatch/releases/download/v1.0.14/Hatch-1.0.14-x86_64.AppImage"
-                    class="dl-card">
-                    <i class="fab fa-linux"></i>
-                    <span>Linux</span>
-                    <small>Standard AppImage (Generic x64)</small>
-                </a>
-            </div>
+        <div class="tribute">
+            <img src="assets/icon.png" alt="Hatch icon">
+            <p>The app icon is a tribute to <strong>Anaappara Achamma</strong>, portrayed by the legendary actress <strong>Philomina</strong> — a celebration of roots, foundation, and cinematic legacy.</p>
         </div>
-    </section>
 
-    <!-- Professional Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <a href="#" class="footer-logo">
-                        <img src="assets/icon.png" alt="Hatch">
-                        <span>Hatch</span>
-                    </a>
-                    <p>Standardizing the structural foundation of high-end post-production. An engineering project by
-                        Chasing Hues.</p>
-                </div>
-
-                <div class="footer-links">
-                    <div class="footer-nav-group">
-                        <h5>Engineering</h5>
-                        <a href="https://github.com/chasinghues/Hatch">Source Code</a>
-                        <a href="https://github.com/chasinghues/Hatch/releases">Latest Builds</a>
-                        <a href="https://github.com/chasinghues/Hatch/issues">Bug Tracker</a>
-                    </div>
-                    <div class="footer-nav-group">
-                        <h5>Community</h5>
-                        <a href="https://github.com/chasinghues/Hatch/pulls">Contribution</a>
-                        <a href="https://github.com/chasinghues/Hatch/blob/main/LICENSE">MIT License</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="philomina">
-                <img src="assets/icon.png" alt="Hatch App Icon" class="philomina-icon">
-                <div class="philomina-text">
-                    <i class="fas fa-quote-left"
-                        style="color: var(--primary); margin-bottom: 1rem; display: block;"></i>
-                    The app icon is a tribute to the iconic <strong>Anaappara Achamma</strong>, portrayed by the
-                    legendary
-                    actress <strong>Philomina</strong>. A celebration of roots, structural foundation, and cinematic
-                    legacy.
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                <p>© 2026 Chasing Hues. Orchestrating the foundations of film tech.</p>
-                <div class="social-links">
-                    <a href="https://github.com/chasinghues/Hatch"><i class="fab fa-github"></i></a>
-                </div>
-            </div>
+        <div class="footer-bottom">
+            <span>© 2026 Chasing Hues</span>
+            <a href="https://github.com/chasinghues/Hatch"><i class="fab fa-github"></i> GitHub</a>
         </div>
-    </footer>
+    </div>
+</footer>
 
 </body>
-
 </html>
